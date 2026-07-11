@@ -1,51 +1,52 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
+"""
+FinPulse FastAPI entry point.
+Phase 1 goal: just prove the app boots and can see Kafka + Redis.
+Real endpoints (feed, search, alerts, trending, websocket) get added in Phase 4.
+"""
+from contextlib import asynccontextmanager
 
-from app.api.v1.router import api_router
-from app.core.config import settings
-from app.core.logging import get_logger, setup_logging
+import redis.asyncio as aioredis
+from confluent_kafka.admin import AdminClient
+from fastapi import FastAPI
 
-
-setup_logging(settings.APP_ENV, settings.APP_DEBUG)
-logger = get_logger(__name__)
-
-app = FastAPI(
-    title=settings.APP_NAME,
-    debug=settings.APP_DEBUG,
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(api_router, prefix="/api/v1")
+from app.config import settings
 
 
-@app.on_event("startup")
-async def on_startup() -> None:
-    logger.info("Application startup")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.redis = aioredis.Redis(host=settings.redis_host, port=settings.redis_port)
+    yield
+    await app.state.redis.close()
 
 
-@app.on_event("shutdown")
-async def on_shutdown() -> None:
-    logger.info("Application shutdown")
+app = FastAPI(title="FinPulse API", version="0.1.0", lifespan=lifespan)
 
 
 @app.get("/health")
-async def health_check() -> dict[str, str]:
-    return {"status": "ok"}
+async def health():
+    """Confirms the API process is up and can reach Kafka + Redis.
+    This is the first thing to check after `docker compose up`."""
+    status = {"api": "ok", "kafka": "unknown", "redis": "unknown"}
 
-
-@app.websocket("/ws/feed")
-async def feed_websocket(websocket: WebSocket) -> None:
-    await websocket.accept()
+    # Redis check
     try:
-        await websocket.send_json({"status": "connected", "message": "Feed stream placeholder"})
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        logger.info("Feed websocket disconnected")
+        pong = await app.state.redis.ping()
+        status["redis"] = "ok" if pong else "unreachable"
+    except Exception as e:
+        status["redis"] = f"error: {e}"
+
+    # Kafka check (lightweight metadata fetch, 2s timeout)
+    try:
+        admin = AdminClient({"bootstrap.servers": settings.kafka_bootstrap_servers})
+        metadata = admin.list_topics(timeout=2)
+        status["kafka"] = "ok"
+        status["kafka_topics"] = list(metadata.topics.keys())
+    except Exception as e:
+        status["kafka"] = f"error: {e}"
+
+    return status
+
+
+@app.get("/")
+async def root():
+    return {"message": "FinPulse API — Phase 1 skeleton running", "version": settings.processor_version}

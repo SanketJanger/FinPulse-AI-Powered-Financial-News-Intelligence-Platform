@@ -1,21 +1,15 @@
-fastapi
-uvicorn[standard]
-kafka-python
-confluent-kafka
-langchain
-langchain-groq
-langchain-community
-chromadb
-sentence-transformers
-supabase
-sqlalchemy
-asyncpg
-redis
-aioredis
-pydantic
-pydantic-settings
-python-dotenv
-httpx
-newsapi-python
-pytest
-pytest-asyncio
+# Phase 1: Pure backend, no AI dependencies yet.
+# FinBERT/torch/transformers get added in Phase 5 (V2).
+# Groq/LangChain/sentence-transformers get added in Phase 6 (V3).
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+pydantic-settings==2.5.2
+confluent-kafka==2.5.3
+redis==5.0.8
+asyncpg==0.29.0
+sqlalchemy==2.0.35
+python-dotenv==1.0.1
+httpx==0.27.2
+feedparser==6.0.11

@@ -51,4 +51,4 @@ backend/.mypy_cache/
 backend/.ruff_cache/
 frontend/.vercel/
 .env
-.env.example
+
