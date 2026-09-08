@@ -80,7 +80,55 @@ you'd hit if `uvicorn` picks up the system install instead of the venv one.
 No AI, no news ingestion yet, no database writes. This phase only proves the
 plumbing (Kafka + Redis + FastAPI) works together. Phase 2 adds the News Producer.
 
-## Next: Phase 2 — Data Ingestion
-Once `/health` returns clean, we'll build the News Producer service that pulls
-from NewsAPI + RSS feeds and publishes to `raw-news`. That's when you'll need
-a NewsAPI key (free tier: https://newsapi.org/register).
+---
+
+# Phase 4 — Backend API (V1)
+
+The deployable V1: a read API over the articles Postgres stores, plus a
+real-time WebSocket feed. No AI yet.
+
+## Run the whole pipeline locally
+
+```bash
+# 1. infra (from Phase 1)
+./scripts/setup-local.sh
+
+# 2. API
+cd backend && source venv/bin/activate
+uvicorn app.main:app --reload            # http://localhost:8000/docs
+
+# 3. consumer — drains raw-news into Postgres, fans new rows out to /ws/feed
+python -m app.services.ai_consumer
+
+# 4. producer — pulls NewsAPI + RSS, publishes to raw-news (needs NEWSAPI_KEY)
+python -m app.services.news_producer
+```
+
+## Endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/health` | api / redis / kafka / database status (never 5xx) |
+| GET | `/api/feed` | `page` (≥1), `page_size` (1–100), `source`, `date_from`, `date_to` (ISO). Cached in Redis for `FEED_CACHE_TTL` s (default 60); response carries `X-Cache: HIT\|MISS` |
+| GET | `/api/article/{id}` | UUID path; 422 on malformed id, 404 if absent |
+| GET | `/api/trending` | `window_hours` (1–168, default 24), `limit` (1–50). Top sources by volume in the window. Cached like `/api/feed` |
+| WS | `/ws/feed` | Emits `{"type":"connected"}` then `{"type":"article","data":{…}}` for every newly-stored article |
+
+Ordering / date filtering use `coalesce(published_at, fetched_at)` so RSS
+rows with no publisher timestamp still sort and filter sensibly.
+
+## Error contract
+
+- **422** — bad query/path params: `{"detail": [ …pydantic errors… ]}`
+- **404** — `GET /api/article/{id}` for a well-formed but unknown UUID: `{"detail": "Article … not found"}`
+- **500** — anything unhandled: `{"detail": "Internal server error"}` (full traceback stays in the server log)
+
+## Config (added this phase, all optional)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `CORS_ORIGINS` | `["http://localhost:3000"]` | JSON list of allowed browser origins |
+| `FEED_CACHE_TTL` | `60` | seconds `/api/feed` and `/api/trending` stay cached |
+| `NEW_ARTICLES_CHANNEL` | `finpulse:new-articles` | Redis pub/sub channel bridging consumer → `/ws/feed` |
+
+## Next: Phase 5 — FinBERT sentiment (V2)

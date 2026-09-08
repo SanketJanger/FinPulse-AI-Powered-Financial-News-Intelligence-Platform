@@ -6,12 +6,18 @@ PROCESSOR_VERSION, without changing this file's overall structure.
 """
 import asyncio
 
+import redis.asyncio as aioredis
 from confluent_kafka import Consumer
 
 from app.config import settings
+from app.core.events import publish_new_article
 from app.database import async_session
 from app.models.article import RawArticle
 from app.models.database import ArticleORM
+
+redis_client = aioredis.Redis(
+    host=settings.redis_host, port=settings.redis_port, decode_responses=False
+)
 
 consumer_config = {
     "bootstrap.servers": settings.kafka_bootstrap_servers,
@@ -68,6 +74,10 @@ async def run_forever() -> None:
                 saved = await save_article(raw_article)
                 status = "saved" if saved else "duplicate (skipped)"
                 print(f"[{status}] {raw_article.source}: {raw_article.title}")
+                if saved:
+                    # Fan out to any connected /ws/feed clients. Best-effort:
+                    # a failure here doesn't block the offset commit.
+                    await publish_new_article(redis_client, raw_article.model_dump_json())
             except Exception as e:
                 print(f"Failed to process message: {e}")
 
@@ -75,7 +85,9 @@ async def run_forever() -> None:
 
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
+    finally:
         kafka_consumer.close()
+        await redis_client.aclose()
         print("Done.")
 
 
