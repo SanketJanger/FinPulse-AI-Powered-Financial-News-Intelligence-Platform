@@ -287,6 +287,53 @@ table so it can't drift from what triggered the alert.
 | `GROQ_MODEL` | `openai/gpt-oss-20b` | summary model |
 | `GROQ_MIN_INTERVAL_MS` | `2100` | client-side throttle between Groq calls |
 | `EMBEDDING_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | 384-dim |
-| `CHROMA_HOST` / `CHROMA_PORT` | `localhost` / `8000` | ChromaDB |
+| `CHROMA_HOST` / `CHROMA_PORT` | `localhost` / `8002` | ChromaDB (host 8002 → container 8000) |
 | `CHROMA_COLLECTION` | `articles` | collection name (cosine space) |
 | `ALERT_IMPACT_THRESHOLD` | `8` | `impact_score >=` this → `alerts` topic |
+
+---
+
+# Phase 7 — Next.js frontend
+
+`frontend/` — Next.js 14 (App Router, TypeScript, Tailwind). A single-page
+dashboard over the backend API with a live feed.
+
+## Run
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local          # NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev                          # http://localhost:3000
+```
+
+The backend API must be running on `NEXT_PUBLIC_API_URL` (`uvicorn app.main:app`).
+For the live feed and `/api/search` to have anything to show, also run the
+consumer and, ideally, `PROCESSOR_VERSION=v3`.
+
+## What's on the page
+
+| Component | Source | Notes |
+|-----------|--------|-------|
+| `NewsFeed` | `GET /api/feed` | pagination ("Load more"), sentiment filter chips; prepends websocket pushes with a highlight |
+| `ArticleCard` | — | title, source, relative time, category, summary, `SentimentBadge`, `ImpactMeter`, `$TICKER` chips |
+| `SentimentBadge` | — | bullish = green, bearish = red, neutral = gray (label always shown → CVD-safe) |
+| `SearchBar` → `SearchResults` | `POST /api/search` | semantic search; `?q=` in the URL runs a search on load; each hit shows a `% match` |
+| `TrendingSidebar` | `GET /api/trending` | top sources (24h) with volume bars |
+| `SentimentStats` | `GET /api/sentiment/stats` | stacked bar per day + legend + hover + table view |
+| `AlertsBanner` | `GET /api/alerts` | dismissible strip of high-impact headlines |
+| `useFeedSocket` | `WS /ws/feed` | reconnects with backoff; drives the header "live" indicator |
+
+- **Types** (`lib/types.ts`) mirror the backend Pydantic response models.
+- **API client** (`lib/api.ts`) — one function per endpoint, typed, with an
+  `ApiError` that carries the status (search shows a specific message on 503).
+- **Responsive** — two-column ≥ `lg`, single column with the sidebar below on mobile.
+- **Dark mode** — follows `prefers-color-scheme`, toggle persists to `localStorage`,
+  no flash (inline script in `<head>`).
+- Loading = skeletons; errors = inline message + Retry.
+
+## Config
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | backend base URL; `ws(s)://…/ws/feed` is derived from it |

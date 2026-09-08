@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Colours are stored as space-separated RGB channels so Tailwind's
+   opacity modifiers (bg-bullish/12, ring-border/60, ...) work. */
+:root {
+  --background: 250 250 249;
+  --surface: 255 255 255;
+  --border: 231 229 228;
+  --foreground: 28 25 23;
+  --muted: 120 113 108;
+  --accent: 79 70 229;
+
+  --bullish: 5 150 105;
+  --bearish: 220 38 38;
+  --neutral: 113 113 122;
+}
+
+.dark {
+  --background: 12 10 9;
+  --surface: 28 25 23;
+  --border: 41 37 36;
+  --foreground: 245 245 244;
+  --muted: 168 162 158;
+  --accent: 129 140 248;
+
+  --bullish: 16 185 129;
+  --bearish: 239 68 68;
+  --neutral: 161 161 170;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+}
+
+.scroll-slim::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: rgb(var(--border));
+  border-radius: 999px;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 1.6s ease-in-out infinite;
+}
