@@ -25,12 +25,22 @@ from app.models.article import RawArticle
 
 
 class Enrichment(BaseModel):
-    """The V2+ columns. All optional — v1 returns this empty."""
+    """The V2+ columns. All optional — v1 returns this empty, and any
+    individual v3 step (summary, entities, embedding) that fails just
+    leaves its field None."""
 
+    # v2
     sentiment: str | None = None
     confidence: float | None = None
     impact_score: int | None = None
     processed_at: datetime | None = None
+
+    # v3
+    summary: str | None = None
+    tickers: list[str] | None = None
+    companies: list[str] | None = None
+    category: str | None = None
+    embedding_id: str | None = None
 
 
 class BaseArticleProcessor(ABC):

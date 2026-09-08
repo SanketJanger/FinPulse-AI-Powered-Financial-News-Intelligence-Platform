@@ -1,8 +1,9 @@
 """
 AI Consumer.
 Reads from 'raw-news', validates, runs the version-specific processor
-(PROCESSOR_VERSION: v1 pass-through, v2 FinBERT sentiment, v3 later),
-persists to Postgres, and fans new rows out to /ws/feed via Redis pub/sub.
+(PROCESSOR_VERSION: v1 pass-through, v2 FinBERT sentiment, v3 hybrid),
+persists to Postgres, fans new rows out to /ws/feed via Redis pub/sub, and
+publishes high-impact articles to the 'alerts' topic.
 
 The processor is the only version-aware piece — this loop is unchanged
 across V1/V2/V3.
@@ -14,6 +15,7 @@ import redis.asyncio as aioredis
 from confluent_kafka import Consumer
 
 from app.config import settings
+from app.core.alerts import make_alert_producer, publish_alert, should_alert
 from app.core.events import publish_new_article
 from app.database import async_session
 from app.models.article import RawArticle
@@ -52,6 +54,11 @@ async def save_article(raw_article: RawArticle, enrichment: Enrichment) -> bool:
         confidence=enrichment.confidence,
         impact_score=enrichment.impact_score,
         processed_at=enrichment.processed_at,
+        summary=enrichment.summary,
+        tickers=enrichment.tickers,
+        companies=enrichment.companies,
+        category=enrichment.category,
+        embedding_id=enrichment.embedding_id,
     )
     async with async_session() as session:
         session.add(orm_article)
@@ -76,6 +83,7 @@ async def run_forever() -> None:
     """Continuously polls Kafka for new messages, processes and saves each
     one, then commits the offset only after handling it."""
     processor = get_processor(settings.processor_version)
+    alert_producer = make_alert_producer()
     print(f"AI Consumer starting (PROCESSOR_VERSION={settings.processor_version}). Loading processor...")
     await processor.startup()
     print(f"Processor '{processor.version}' ready. Press Ctrl+C to stop.\n")
@@ -95,12 +103,15 @@ async def run_forever() -> None:
                 enrichment = await processor.process(raw_article)
                 saved = await save_article(raw_article, enrichment)
                 status = "saved" if saved else "duplicate (skipped)"
-                extra = f" [{enrichment.sentiment} {enrichment.confidence}]" if enrichment.sentiment else ""
+                extra = f" [{enrichment.sentiment} {enrichment.confidence} impact={enrichment.impact_score}]" if enrichment.sentiment else ""
                 print(f"[{status}]{extra} {raw_article.source}: {raw_article.title}")
                 if saved:
                     # Fan out to any connected /ws/feed clients. Best-effort:
                     # a failure here doesn't block the offset commit.
                     await publish_new_article(redis_client, _ws_payload(raw_article, enrichment))
+                    if should_alert(enrichment):
+                        publish_alert(alert_producer, raw_article, enrichment)
+                        print(f"  -> ALERT (impact {enrichment.impact_score}) published to 'alerts'")
             except Exception as e:
                 print(f"Failed to process message: {e}")
 
@@ -110,6 +121,7 @@ async def run_forever() -> None:
         print("\nShutting down gracefully...")
     finally:
         await processor.shutdown()
+        alert_producer.flush(5)
         kafka_consumer.close()
         await redis_client.aclose()
         print("Done.")

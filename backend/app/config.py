@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     # and the /ws/feed WebSocket subscribes to for real-time push.
     new_articles_channel: str = "finpulse:new-articles"
 
+    # AI — V3 (Phase 6)
+    groq_model: str = "openai/gpt-oss-20b"
+    groq_min_interval_ms: int = 2100  # client-side throttle for Groq free tier (~30 rpm)
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"  # 384-dim
+    chroma_collection: str = "articles"
+    alert_impact_threshold: int = 8  # impact_score >= this -> publish to 'alerts'
+
     # Database
     database_url: str = ""
     supabase_url: str = ""
@@ -46,9 +53,9 @@ class Settings(BaseSettings):
     # AI
     groq_api_key: str = ""
 
-    # Vector DB
+    # Vector DB (host port 8002 -> container 8000; API owns host 8000)
     chroma_host: str = "localhost"
-    chroma_port: int = 8000
+    chroma_port: int = 8002
 
 
 @lru_cache
