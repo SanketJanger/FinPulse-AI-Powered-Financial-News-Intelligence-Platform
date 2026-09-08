@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     # AI — V3 (Phase 6)
     groq_model: str = "openai/gpt-oss-20b"
     groq_min_interval_ms: int = 2100  # client-side throttle for Groq free tier (~30 rpm)
+
+    # Evaluation (Phase 8) — OpenAI is the ground-truth labeller / RAG judge,
+    # kept separate from every model under test.
+    openai_api_key: str = ""
+    eval_label_model: str = "gpt-4o-mini"
+    eval_groq_model: str = "openai/gpt-oss-120b"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"  # 384-dim
     chroma_collection: str = "articles"
     alert_impact_threshold: int = 8  # impact_score >= this -> publish to 'alerts'
