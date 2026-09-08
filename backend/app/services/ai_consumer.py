@@ -1,10 +1,14 @@
 """
-Phase 3: Pass-Through Consumer.
-Reads from 'raw-news', validates, and persists to Postgres. No AI processing
-yet — that gets added in Phase 5 (V2) and Phase 6 (V3), controlled by
-PROCESSOR_VERSION, without changing this file's overall structure.
+AI Consumer.
+Reads from 'raw-news', validates, runs the version-specific processor
+(PROCESSOR_VERSION: v1 pass-through, v2 FinBERT sentiment, v3 later),
+persists to Postgres, and fans new rows out to /ws/feed via Redis pub/sub.
+
+The processor is the only version-aware piece — this loop is unchanged
+across V1/V2/V3.
 """
 import asyncio
+import json
 
 import redis.asyncio as aioredis
 from confluent_kafka import Consumer
@@ -14,6 +18,7 @@ from app.core.events import publish_new_article
 from app.database import async_session
 from app.models.article import RawArticle
 from app.models.database import ArticleORM
+from app.processors import Enrichment, get_processor
 
 redis_client = aioredis.Redis(
     host=settings.redis_host, port=settings.redis_port, decode_responses=False
@@ -30,8 +35,8 @@ kafka_consumer = Consumer(consumer_config)
 kafka_consumer.subscribe(["raw-news"])
 
 
-async def save_article(raw_article: RawArticle) -> bool:
-    """Persists one validated article to Postgres.
+async def save_article(raw_article: RawArticle, enrichment: Enrichment) -> bool:
+    """Persists one validated + enriched article to Postgres.
     Returns True if saved, False if it was already there (duplicate URL)."""
     orm_article = ArticleORM(
         id=raw_article.id,
@@ -43,6 +48,10 @@ async def save_article(raw_article: RawArticle) -> bool:
         author=raw_article.author,
         published_at=raw_article.published_at,
         fetched_at=raw_article.fetched_at,
+        sentiment=enrichment.sentiment,
+        confidence=enrichment.confidence,
+        impact_score=enrichment.impact_score,
+        processed_at=enrichment.processed_at,
     )
     async with async_session() as session:
         session.add(orm_article)
@@ -55,10 +64,22 @@ async def save_article(raw_article: RawArticle) -> bool:
             await session.rollback()
             return False
 
+
+def _ws_payload(raw_article: RawArticle, enrichment: Enrichment) -> str:
+    """Article JSON for /ws/feed clients, with any enrichment merged in."""
+    data = raw_article.model_dump(mode="json")
+    data.update(enrichment.model_dump(mode="json", exclude_none=True))
+    return json.dumps(data)
+
+
 async def run_forever() -> None:
-    """Continuously polls Kafka for new messages, validates and saves each
-    one, then commits the offset only after a successful save."""
-    print("AI Consumer (V1 pass-through) starting. Press Ctrl+C to stop.\n")
+    """Continuously polls Kafka for new messages, processes and saves each
+    one, then commits the offset only after handling it."""
+    processor = get_processor(settings.processor_version)
+    print(f"AI Consumer starting (PROCESSOR_VERSION={settings.processor_version}). Loading processor...")
+    await processor.startup()
+    print(f"Processor '{processor.version}' ready. Press Ctrl+C to stop.\n")
+
     try:
         while True:
             msg = kafka_consumer.poll(timeout=1.0)
@@ -71,13 +92,15 @@ async def run_forever() -> None:
 
             try:
                 raw_article = RawArticle.model_validate_json(msg.value())
-                saved = await save_article(raw_article)
+                enrichment = await processor.process(raw_article)
+                saved = await save_article(raw_article, enrichment)
                 status = "saved" if saved else "duplicate (skipped)"
-                print(f"[{status}] {raw_article.source}: {raw_article.title}")
+                extra = f" [{enrichment.sentiment} {enrichment.confidence}]" if enrichment.sentiment else ""
+                print(f"[{status}]{extra} {raw_article.source}: {raw_article.title}")
                 if saved:
                     # Fan out to any connected /ws/feed clients. Best-effort:
                     # a failure here doesn't block the offset commit.
-                    await publish_new_article(redis_client, raw_article.model_dump_json())
+                    await publish_new_article(redis_client, _ws_payload(raw_article, enrichment))
             except Exception as e:
                 print(f"Failed to process message: {e}")
 
@@ -86,6 +109,7 @@ async def run_forever() -> None:
     except KeyboardInterrupt:
         print("\nShutting down gracefully...")
     finally:
+        await processor.shutdown()
         kafka_consumer.close()
         await redis_client.aclose()
         print("Done.")

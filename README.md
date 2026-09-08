@@ -131,4 +131,94 @@ rows with no publisher timestamp still sort and filter sensibly.
 | `FEED_CACHE_TTL` | `60` | seconds `/api/feed` and `/api/trending` stay cached |
 | `NEW_ARTICLES_CHANNEL` | `finpulse:new-articles` | Redis pub/sub channel bridging consumer → `/ws/feed` |
 
-## Next: Phase 5 — FinBERT sentiment (V2)
+---
+
+# Database migrations (Alembic)
+
+The schema is managed by Alembic (`backend/alembic/`). A fresh environment
+builds the whole schema with one command; nothing is created implicitly at
+app startup.
+
+```bash
+cd backend && source venv/bin/activate
+
+alembic upgrade head        # build / update schema to latest
+alembic history             # list migrations
+alembic current             # what this DB is at
+alembic downgrade -1        # roll back one
+```
+
+The DB URL comes from `DATABASE_URL` in `.env` (read by `alembic/env.py`),
+not from `alembic.ini`. `alembic check` fails CI if the ORM in
+`app/models/database.py` has drifted from the migrations.
+
+Migrations:
+- `0001_initial_articles` — baseline `articles` table (Phase 3 schema)
+- `0002_add_v2_sentiment_columns` — adds `sentiment`, `confidence`, `impact_score`, `processed_at`
+
+> If you already ran Phase 3 (so `articles` exists but there's no
+> `alembic_version` table), stamp the baseline once before upgrading:
+> `alembic stamp 0001_initial_articles && alembic upgrade head`.
+
+---
+
+# Phase 5 — FinBERT sentiment (V2)
+
+Adds a sentiment pass to the consumer, switched on by `PROCESSOR_VERSION`.
+No API or schema rewrite — just new nullable columns and endpoints.
+
+## Switch versions
+
+```bash
+# v1 — pass-through, no ML deps needed
+PROCESSOR_VERSION=v1 python -m app.services.ai_consumer
+
+# v2 — FinBERT sentiment (needs torch + transformers)
+pip install torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+pip install transformers==4.44.2
+PROCESSOR_VERSION=v2 python -m app.services.ai_consumer
+```
+
+The FinBERT model (`ProsusAI/finbert`, ~440 MB) loads **once** at consumer
+startup — GPU if `torch.cuda.is_available()`, else CPU. If the model fails
+to load or score an article, the article is still stored, just with
+`sentiment = NULL`.
+
+## Backfill existing rows
+
+```bash
+PROCESSOR_VERSION=v2 python -m app.services.backfill_sentiment [--limit N] [--batch N]
+```
+Scores every `articles` row where `processed_at IS NULL` and updates it in
+place — use it when rolling V2 out over data ingested under V1.
+
+## Enrichment
+
+`ProsusAI/finbert` labels (`positive`/`negative`/`neutral`) are surfaced as
+`bullish`/`bearish`/`neutral`. `impact_score` is derived from model
+confidence:
+
+| confidence | impact_score |
+|------------|--------------|
+| > 0.9 | 8 |
+| > 0.8 | 6 |
+| > 0.7 | 5 |
+| else  | 3 |
+
+## New / changed endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/feed` | + `sentiment=bullish\|bearish\|neutral` filter (422 on any other value) |
+| GET | `/api/article/{id}` | response now carries `sentiment`, `confidence`, `impact_score`, `processed_at` (null under v1) |
+| GET | `/api/sentiment/stats` | `days` (1–90, default 7). Daily `{bullish, bearish, neutral, total}` buckets (UTC), over rows with `processed_at` set. Cached `SENTIMENT_STATS_TTL` s (default 300) |
+
+## Config (added this phase)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `PROCESSOR_VERSION` | `v1` | `v1` pass-through · `v2` FinBERT |
+| `FINBERT_MODEL` | `ProsusAI/finbert` | HF model id for v2 |
+| `SENTIMENT_STATS_TTL` | `300` | `/api/sentiment/stats` cache seconds |
+
+## Next: Phase 6 — Groq summaries + embeddings + semantic search (V3)

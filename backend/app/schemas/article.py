@@ -3,7 +3,7 @@ API response models. These are deliberately separate from RawArticle
 (the ingestion/Kafka model) and ArticleORM (the database row) so that the
 public API shape can evolve without dragging those along, and vice versa.
 """
-from datetime import datetime
+from datetime import date, datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -24,6 +24,12 @@ class ArticleResponse(BaseModel):
     author: str | None = None
     published_at: datetime | None = None
     fetched_at: datetime
+
+    # V2 (Phase 5) — null when the article was stored by the v1 processor.
+    sentiment: str | None = None
+    confidence: float | None = None
+    impact_score: int | None = None
+    processed_at: datetime | None = None
 
 
 class PageMeta(BaseModel):
@@ -53,6 +59,19 @@ class TrendingResponse(BaseModel):
     window_hours: int
     total_articles: int
     top_sources: list[SourceCount]
+
+
+class SentimentDayStats(BaseModel):
+    date: date
+    bullish: int = 0
+    bearish: int = 0
+    neutral: int = 0
+    total: int = 0
+
+
+class SentimentStatsResponse(BaseModel):
+    generated_at: datetime
+    days: list[SentimentDayStats]
 
 
 class HealthResponse(BaseModel):

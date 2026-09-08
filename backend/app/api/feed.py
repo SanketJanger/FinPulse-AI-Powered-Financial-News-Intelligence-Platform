@@ -31,14 +31,20 @@ _ORDER_KEY = func.coalesce(ArticleORM.published_at, ArticleORM.fetched_at)
 
 
 def _cache_key(
-    page: int, page_size: int, source: str | None, date_from: datetime | None, date_to: datetime | None
+    page: int,
+    page_size: int,
+    source: str | None,
+    date_from: datetime | None,
+    date_to: datetime | None,
+    sentiment: str | None,
 ) -> str:
     return (
-        "feed:v1:"
+        "feed:v2:"
         f"{page}:{page_size}:"
         f"{source or '*'}:"
         f"{date_from.isoformat() if date_from else '*'}:"
-        f"{date_to.isoformat() if date_to else '*'}"
+        f"{date_to.isoformat() if date_to else '*'}:"
+        f"{sentiment or '*'}"
     )
 
 
@@ -54,6 +60,11 @@ async def get_feed(
     date_to: datetime | None = Query(
         None, description="Only articles at/before this ISO timestamp"
     ),
+    sentiment: str | None = Query(
+        None,
+        pattern="^(bullish|bearish|neutral)$",
+        description="V2 filter: bullish | bearish | neutral",
+    ),
     db: AsyncSession = Depends(get_db),
     redis=Depends(get_redis),
 ) -> FeedResponse:
@@ -65,6 +76,8 @@ async def get_feed(
             filters.append(_ORDER_KEY >= date_from)
         if date_to is not None:
             filters.append(_ORDER_KEY <= date_to)
+        if sentiment is not None:
+            filters.append(ArticleORM.sentiment == sentiment)
 
         total = await db.scalar(
             select(func.count()).select_from(ArticleORM).where(*filters)
@@ -95,7 +108,10 @@ async def get_feed(
         return payload.model_dump(mode="json")
 
     data, hit = await cache_aside(
-        redis, _cache_key(page, page_size, source, date_from, date_to), settings.feed_cache_ttl, loader
+        redis,
+        _cache_key(page, page_size, source, date_from, date_to, sentiment),
+        settings.feed_cache_ttl,
+        loader,
     )
     response.headers["X-Cache"] = "HIT" if hit else "MISS"
     return FeedResponse.model_validate(data)

@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import articles, feed, health, trending, websocket
+from app.api import articles, feed, health, sentiment, trending, websocket
 from app.config import settings
 from app.core.middleware import RequestLoggingMiddleware
 from app.database import engine
@@ -77,6 +77,7 @@ app.include_router(health.router)
 app.include_router(feed.router)
 app.include_router(articles.router)
 app.include_router(trending.router)
+app.include_router(sentiment.router)
 app.include_router(websocket.router)
 
 

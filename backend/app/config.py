@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     # JSON list in .env, e.g. CORS_ORIGINS=["http://localhost:3000","https://app.finpulse.io"]
     cors_origins: list[str] = ["http://localhost:3000"]
     feed_cache_ttl: int = 60  # seconds the /api/feed response stays cached in Redis
+    sentiment_stats_ttl: int = 300  # /api/sentiment/stats cache (5 min)
+
+    # AI — V2 (Phase 5)
+    finbert_model: str = "ProsusAI/finbert"
 
     # Kafka
     kafka_bootstrap_servers: str = "localhost:9094"
