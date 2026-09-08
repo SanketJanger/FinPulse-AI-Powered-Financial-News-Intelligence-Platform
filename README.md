@@ -337,3 +337,56 @@ consumer and, ideally, `PROCESSOR_VERSION=v3`.
 | Env var | Default | Meaning |
 |---------|---------|---------|
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | backend base URL; `ws(s)://…/ws/feed` is derived from it |
+
+---
+
+# Phase 8 — Evaluation (VADER vs FinBERT vs Groq LLM + RAG)
+
+`backend/scripts/evaluation.py` — compares three sentiment classifiers
+against an independent reference and evaluates the semantic-search
+retrieval. Everything is written to `backend/eval_output/` as CSV/JSON/PNG.
+
+## Run
+
+```bash
+cd backend && source venv/bin/activate
+pip install openai vaderSentiment pandas matplotlib seaborn scikit-learn
+export OPENAI_API_KEY=sk-...          # ground-truth labeller + RAG judge (gpt-4o-mini)
+# GROQ_API_KEY must also be set (LLM classifier under test)
+docker compose --profile v3 up -d chromadb
+
+python -m scripts.evaluation --n 200
+# resume without re-spending API calls:
+python -m scripts.evaluation --reuse-labels --reuse-predictions
+python -m scripts.evaluation --reuse-labels --skip-rag
+```
+
+## Design
+
+| | |
+|---|---|
+| **Test set** | `--n` articles from Postgres, stratified by source, fixed seed (`scripts/eval/dataset.py`) |
+| **Ground truth** | OpenAI `gpt-4o-mini` (not a system under test) + a fixed market-impact rubric; each item labelled twice (temp 0 / temp 0.5) → `gt_stable` flag; metrics reported on full set **and** stable subset |
+| **Classifiers** | VADER (`compound` thresholds), FinBERT (`app.analysis.finbert`), Groq `openai/gpt-oss-120b` (zero-shot, same rubric) — common `predict(text) → (label, latency)` interface |
+| **Metrics** | accuracy, macro/weighted P/R/F1, per-class F1, confusion matrix, Cohen's κ vs GT, latency mean/median/p95 (`sklearn`) |
+| **RAG** | 20 topical queries → dedicated ChromaDB collection of the test set → `gpt-4o-mini` judges each top-10 hit → Precision@5, Precision@10, MRR |
+
+## Artefacts (`backend/eval_output/`)
+
+| File | Contents |
+|------|----------|
+| `test_set.csv` | `article_id, title, content, ground_truth_sentiment, gt_confidence, gt_stable, gt_rationale, source, url` |
+| `predictions.csv` | per-article predictions + latencies, all 3 models + GT |
+| `metrics.json` | full metric objects (full set + stable subset) |
+| `rag_judgements.csv` | per `(query, hit)` relevance + similarity |
+| `rag_metrics.json` | P@5 / P@10 / MRR overall + per query |
+| `figures/*.png` | confusion matrices, model comparison, per-class F1, latency (150 dpi) |
+| `EVALUATION_REPORT.md` | the full write-up, incl. a Threats-to-validity section |
+
+## Config
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `OPENAI_API_KEY` | — | ground-truth labeller + RAG judge |
+| `EVAL_LABEL_MODEL` | `gpt-4o-mini` | |
+| `EVAL_GROQ_MODEL` | `openai/gpt-oss-120b` | LLM classifier under test |

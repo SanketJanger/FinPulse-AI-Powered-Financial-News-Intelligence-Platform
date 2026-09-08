@@ -46,6 +46,22 @@ def fetch_newsapi_articles(page_size: int = 5) -> list[RawArticle]:
 
 RSS_FEEDS = {
     "CNBC RSS": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    "CNBC Markets": "https://www.cnbc.com/id/20910258/device/rss/rss.html",
+    "CNBC Economy": "https://www.cnbc.com/id/20910258/device/rss/rss.html",
+    "CNBC Finance": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+    "MarketWatch Top": "https://feeds.content.dowjones.io/public/rss/mw_topstories",
+    "MarketWatch RealTime": "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines",
+    "MarketWatch Markets": "https://feeds.content.dowjones.io/public/rss/mw_marketpulse",
+    "Yahoo Finance": "https://finance.yahoo.com/news/rssindex",
+    "Investing.com News": "https://www.investing.com/rss/news.rss",
+    "Investing.com Stock": "https://www.investing.com/rss/news_25.rss",
+    "Seeking Alpha": "https://seekingalpha.com/market_currents.xml",
+    "NYT Business": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+    "NYT Economy": "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml",
+    "Guardian Business": "https://www.theguardian.com/uk/business/rss",
+    "BBC Business": "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "Fortune": "https://fortune.com/feed/",
+    "Business Insider": "https://markets.businessinsider.com/rss/news",
 }
 kafka_producer = Producer({"bootstrap.servers": settings.kafka_bootstrap_servers})
 redis_client = redis.Redis(host=settings.redis_host, port=settings.redis_port, decode_responses=True)
