@@ -22,4 +22,11 @@ def get_processor(version: str | None = None) -> BaseArticleProcessor:
 
         return FinBERTProcessor()
 
-    raise ValueError(f"Unknown PROCESSOR_VERSION {version!r} (expected v1 or v2)")
+    if version == "v3":
+        # Lazy for the same reason — plus groq / spacy / sentence-transformers
+        # / chromadb.
+        from app.processors.hybrid import HybridProcessor
+
+        return HybridProcessor()
+
+    raise ValueError(f"Unknown PROCESSOR_VERSION {version!r} (expected v1, v2 or v3)")

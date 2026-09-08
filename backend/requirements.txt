@@ -18,3 +18,11 @@ feedparser==6.0.11
 # CPU wheel: pip install torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu
 torch==2.4.1
 transformers==4.44.2
+
+# Phase 6 (V3) — hybrid pipeline. Only needed when PROCESSOR_VERSION=v3
+# (the API also uses sentence-transformers + chromadb for POST /api/search).
+groq==0.11.0
+spacy==3.7.6
+sentence-transformers==3.1.1
+chromadb==0.5.5
+# after install: python -m spacy download en_core_web_sm

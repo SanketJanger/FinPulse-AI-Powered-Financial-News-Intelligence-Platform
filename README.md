@@ -155,6 +155,7 @@ not from `alembic.ini`. `alembic check` fails CI if the ORM in
 Migrations:
 - `0001_initial_articles` — baseline `articles` table (Phase 3 schema)
 - `0002_add_v2_sentiment_columns` — adds `sentiment`, `confidence`, `impact_score`, `processed_at`
+- `0003_add_v3_columns` — adds `summary`, `tickers`, `companies`, `category`, `embedding_id`
 
 > If you already ran Phase 3 (so `articles` exists but there's no
 > `alembic_version` table), stamp the baseline once before upgrading:
@@ -187,23 +188,26 @@ to load or score an article, the article is still stored, just with
 ## Backfill existing rows
 
 ```bash
-PROCESSOR_VERSION=v2 python -m app.services.backfill_sentiment [--limit N] [--batch N]
+PROCESSOR_VERSION=v2 python -m app.services.backfill          # un-enriched rows only
+PROCESSOR_VERSION=v3 python -m app.services.backfill --all    # re-run everything
+#                                            [--limit N] [--batch N]
 ```
-Scores every `articles` row where `processed_at IS NULL` and updates it in
-place — use it when rolling V2 out over data ingested under V1.
+Runs the current processor over rows already in Postgres and updates them
+in place — use it when rolling a new version out over old data, or after
+changing an enrichment rule.
 
 ## Enrichment
 
 `ProsusAI/finbert` labels (`positive`/`negative`/`neutral`) are surfaced as
-`bullish`/`bearish`/`neutral`. `impact_score` is derived from model
-confidence:
+`bullish`/`bearish`/`neutral`. `impact_score`:
 
-| confidence | impact_score |
-|------------|--------------|
-| > 0.9 | 8 |
-| > 0.8 | 6 |
-| > 0.7 | 5 |
-| else  | 3 |
+| sentiment | impact_score |
+|-----------|--------------|
+| neutral | **3** (floored — no directional signal) |
+| bullish / bearish, confidence > 0.9 | 8 |
+| bullish / bearish, confidence > 0.8 | 6 |
+| bullish / bearish, confidence > 0.7 | 5 |
+| bullish / bearish, else | 3 |
 
 ## New / changed endpoints
 
@@ -217,8 +221,72 @@ confidence:
 
 | Env var | Default | Meaning |
 |---------|---------|---------|
-| `PROCESSOR_VERSION` | `v1` | `v1` pass-through · `v2` FinBERT |
+| `PROCESSOR_VERSION` | `v1` | `v1` pass-through · `v2` FinBERT · `v3` hybrid |
 | `FINBERT_MODEL` | `ProsusAI/finbert` | HF model id for v2 |
 | `SENTIMENT_STATS_TTL` | `300` | `/api/sentiment/stats` cache seconds |
 
-## Next: Phase 6 — Groq summaries + embeddings + semantic search (V3)
+---
+
+# Phase 6 — Hybrid AI (V3)
+
+The consumer's v3 processor chains four steps per article; each is
+independently guarded, so only FinBERT is a hard dependency:
+
+```
+FinBERT       -> sentiment / confidence / impact_score
+Groq (1 call) -> 2-sentence summary + category            (skipped if no GROQ_API_KEY)
+regex + spaCy -> tickers / companies
+MiniLM (384d) -> embedding -> upsert to ChromaDB          embedding_id = article id
+```
+
+## Run V3
+
+```bash
+pip install groq==0.11.0 spacy==3.7.6 sentence-transformers==3.1.1 chromadb==0.5.5
+python -m spacy download en_core_web_sm
+
+docker compose --profile v3 up -d chromadb        # vector DB on :8000
+export GROQ_API_KEY=gsk_...                        # optional — blank => no summaries
+PROCESSOR_VERSION=v3 python -m app.services.ai_consumer
+```
+
+The API process also loads the MiniLM model + connects to ChromaDB at
+startup (for `POST /api/search`). If either is missing, `/api/search`
+returns **503**; every other endpoint is unaffected.
+
+## Endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| POST | `/api/search` | body `{query, k=5 (1–50), sentiment?}`. Embeds the query, cosine-kNN in ChromaDB, hydrates hits from Postgres. Returns `{query, count, hits:[{score, article}]}`, `score` = `1 − cosine_distance` ∈ [0,1], ordered high→low. 503 if search unavailable |
+| GET | `/api/alerts` | `limit` (1–200, default 50), `since` (ISO). Articles with `impact_score >= ALERT_IMPACT_THRESHOLD`, newest first. Returns `{threshold, count, alerts:[…]}` |
+| GET | `/api/article/{id}` · `/api/feed` | responses now also carry `summary`, `tickers`, `companies`, `category`, `embedding_id` |
+
+## Alerts
+
+When an enriched article scores `impact_score >= ALERT_IMPACT_THRESHOLD`
+(default 8) the consumer publishes a compact JSON alert to the Kafka
+**`alerts`** topic (streaming interface for downstream notifiers).
+`GET /api/alerts` is the durable view, read straight from the `articles`
+table so it can't drift from what triggered the alert.
+
+## Graceful degradation
+
+| Failure | Result |
+|---------|--------|
+| No `GROQ_API_KEY` / Groq 4xx-5xx / rate limit (retried once) | article stored, `summary` + `category` NULL |
+| spaCy / regex error | `tickers`/`companies` NULL, rest proceeds |
+| ChromaDB down | embedding still computed, not stored, `embedding_id` NULL; `/api/search` → 503 |
+| FinBERT down | (hard dep) sentiment NULL, article still stored |
+
+## Config (added this phase)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `GROQ_API_KEY` | — | Groq key; blank disables summaries |
+| `GROQ_MODEL` | `openai/gpt-oss-20b` | summary model |
+| `GROQ_MIN_INTERVAL_MS` | `2100` | client-side throttle between Groq calls |
+| `EMBEDDING_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | 384-dim |
+| `CHROMA_HOST` / `CHROMA_PORT` | `localhost` / `8000` | ChromaDB |
+| `CHROMA_COLLECTION` | `articles` | collection name (cosine space) |
+| `ALERT_IMPACT_THRESHOLD` | `8` | `impact_score >=` this → `alerts` topic |

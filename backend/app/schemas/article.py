@@ -31,6 +31,13 @@ class ArticleResponse(BaseModel):
     impact_score: int | None = None
     processed_at: datetime | None = None
 
+    # V3 (Phase 6) — null under v1/v2, or when that enrichment step failed.
+    summary: str | None = None
+    tickers: list[str] | None = None
+    companies: list[str] | None = None
+    category: str | None = None
+    embedding_id: str | None = None
+
 
 class PageMeta(BaseModel):
     """Pagination envelope shared by any list endpoint."""
@@ -72,6 +79,31 @@ class SentimentDayStats(BaseModel):
 class SentimentStatsResponse(BaseModel):
     generated_at: datetime
     days: list[SentimentDayStats]
+
+
+class SearchRequest(BaseModel):
+    query: str = Field(..., min_length=2, max_length=500)
+    k: int = Field(5, ge=1, le=50, description="how many results to return")
+    sentiment: str | None = Field(
+        None, pattern="^(bullish|bearish|neutral)$", description="optional filter"
+    )
+
+
+class SearchHit(BaseModel):
+    score: float  # cosine similarity in [0, 1], higher = closer
+    article: ArticleResponse
+
+
+class SearchResponse(BaseModel):
+    query: str
+    count: int
+    hits: list[SearchHit]
+
+
+class AlertsResponse(BaseModel):
+    threshold: int
+    count: int
+    alerts: list[ArticleResponse]
 
 
 class HealthResponse(BaseModel):

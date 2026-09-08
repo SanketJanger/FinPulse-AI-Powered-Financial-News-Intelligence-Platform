@@ -1,9 +1,11 @@
 """
-FinPulse FastAPI entry point (Phase 4 — V1 backend API).
+FinPulse FastAPI entry point.
 
-Assembles the app: lifespan-managed Redis + DB engine, CORS, request
-logging, consistent error responses, and the read/stream routes.
+Assembles the app: lifespan-managed Redis + DB engine (+ embedder /
+ChromaDB for V3 semantic search), CORS, request logging, consistent error
+responses, and the read/stream routes.
 """
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -14,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import articles, feed, health, sentiment, trending, websocket
+from app.api import alerts, articles, feed, health, search, sentiment, trending, websocket
 from app.config import settings
 from app.core.middleware import RequestLoggingMiddleware
 from app.database import engine
@@ -26,12 +28,40 @@ logging.basicConfig(
 logger = logging.getLogger("finpulse")
 
 
+async def _init_semantic_search(app: FastAPI) -> None:
+    """Best-effort: load the query embedder and connect to ChromaDB so
+    POST /api/search works. On any failure (deps missing, Chroma down)
+    leave them unset — the endpoint then returns 503."""
+    app.state.embedder = None
+    app.state.vector_store = None
+    try:
+        from app.analysis.embeddings import Embedder
+        from app.analysis.vector_store import VectorStore
+
+        embedder = Embedder(model_name=settings.embedding_model)
+        await asyncio.to_thread(embedder.load)
+
+        store = VectorStore(
+            host=settings.chroma_host,
+            port=settings.chroma_port,
+            collection=settings.chroma_collection,
+        )
+        await asyncio.to_thread(store.connect)
+
+        app.state.embedder = embedder
+        app.state.vector_store = store
+        logger.info("semantic search ready")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("semantic search disabled: %s", exc)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.redis = aioredis.Redis(
         host=settings.redis_host, port=settings.redis_port, decode_responses=False
     )
     logger.info("FinPulse API starting (env=%s, version=%s)", settings.environment, settings.processor_version)
+    await _init_semantic_search(app)
     yield
     await app.state.redis.aclose()
     await engine.dispose()
@@ -78,6 +108,8 @@ app.include_router(feed.router)
 app.include_router(articles.router)
 app.include_router(trending.router)
 app.include_router(sentiment.router)
+app.include_router(search.router)
+app.include_router(alerts.router)
 app.include_router(websocket.router)
 
 

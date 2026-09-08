@@ -15,6 +15,17 @@ def get_redis(request: Request) -> Redis:
     return request.app.state.redis
 
 
+def get_embedder(request: Request):
+    """Embedder loaded in the lifespan, or None if sentence-transformers
+    wasn't available / failed to load (V1/V2 deployments)."""
+    return getattr(request.app.state, "embedder", None)
+
+
+def get_vector_store(request: Request):
+    """ChromaDB wrapper from the lifespan, or None if it couldn't connect."""
+    return getattr(request.app.state, "vector_store", None)
+
+
 def get_ws_redis(websocket: WebSocket) -> Redis:
     """Same client, but WebSocket handlers get `websocket` instead of
     `request` injected, so they need their own accessor."""

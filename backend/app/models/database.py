@@ -7,6 +7,7 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import DateTime, Float, Integer, String, Text
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -38,3 +39,10 @@ class ArticleORM(Base):
     processed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True, index=True
     )
+
+    # ── V3 (Phase 6): LLM summary + entities + embedding pointer ───────
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tickers: Mapped[list[str] | None] = mapped_column(ARRAY(Text), nullable=True)
+    companies: Mapped[list[str] | None] = mapped_column(ARRAY(Text), nullable=True)
+    category: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    embedding_id: Mapped[str | None] = mapped_column(Text, nullable=True)

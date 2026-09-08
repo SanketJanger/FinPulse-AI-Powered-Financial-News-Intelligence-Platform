@@ -20,16 +20,24 @@ from app.processors.base import BaseArticleProcessor, Enrichment
 logger = logging.getLogger("finpulse.processor.v2")
 
 
-def impact_from_confidence(confidence: float) -> int:
-    """Map model confidence to a 0-10 'market impact' bucket.
-    Higher confidence in a non-neutral call == a signal worth surfacing."""
+NEUTRAL_IMPACT = 3
+
+
+def impact_from_sentiment(label: str, confidence: float) -> int:
+    """Map a sentiment call to a 0-10 'market impact' bucket.
+
+    Neutral carries no directional signal, so it floors at 3 regardless of
+    how confident the model is. Only bullish/bearish scale with confidence.
+    """
+    if label == "neutral":
+        return NEUTRAL_IMPACT
     if confidence > 0.9:
         return 8
     if confidence > 0.8:
         return 6
     if confidence > 0.7:
         return 5
-    return 3
+    return NEUTRAL_IMPACT
 
 
 def _text_for(article: RawArticle) -> str:
@@ -61,6 +69,6 @@ class FinBERTProcessor(BaseArticleProcessor):
         return Enrichment(
             sentiment=result.label,
             confidence=round(result.confidence, 4),
-            impact_score=impact_from_confidence(result.confidence),
+            impact_score=impact_from_sentiment(result.label, result.confidence),
             processed_at=datetime.now(UTC),
         )
