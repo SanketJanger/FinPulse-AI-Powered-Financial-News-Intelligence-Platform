@@ -28,7 +28,7 @@ export function Header({ socket }: { socket: SocketStatus }) {
           </span>
           <div className="leading-tight">
             <p className="text-sm font-semibold">FinPulse</p>
-            <p className="text-[11px] text-muted">financial news intelligence</p>
+            <p className="text-[11px] text-muted">Real-Time Financial News Intelligence</p>
           </div>
         </div>
 

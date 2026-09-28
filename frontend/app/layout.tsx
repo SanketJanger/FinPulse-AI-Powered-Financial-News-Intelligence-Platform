@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "FinPulse — real-time financial news intelligence",
+  title: "FinPulse - Real-Time Financial News Intelligence",
   description:
     "Live financial news with FinBERT sentiment, LLM summaries, ticker extraction and semantic search.",
 };
