@@ -42,7 +42,7 @@ function Dashboard() {
       setSearchError(
         e instanceof ApiError
           ? e.status === 503
-            ? "Semantic search is unavailable — the V3 embedder / ChromaDB isn't running."
+            ? "Semantic search is unavailable - the V3 embedder / ChromaDB isn't running."
             : e.message
           : "Search failed",
       );
@@ -104,7 +104,7 @@ function Dashboard() {
       </main>
 
       <footer className="mx-auto max-w-6xl px-4 py-6 text-center text-xs text-muted">
-        FinPulse · FinBERT sentiment · Groq summaries · MiniLM semantic search
+        FinPulse
       </footer>
     </div>
   );
