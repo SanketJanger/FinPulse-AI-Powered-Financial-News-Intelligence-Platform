@@ -1,0 +1,201 @@
+query,rank,article_id,similarity,relevant,title
+Federal Reserve interest rate decision and its effect on equities,1,921af829-d812-4be2-87f4-873f65b6a567,0.4974,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+Federal Reserve interest rate decision and its effect on equities,2,d57875d4-33ca-47b0-a7cd-4ec5d753c1b7,0.4751,0,"Best high-yield savings interest rates today, Monday, September 7, 2026: Earn up to 4.10% APY"
+Federal Reserve interest rate decision and its effect on equities,3,f25d61cd-8ea9-49d9-b32b-f6a8c104c169,0.4477,0,Swiss National Bank cuts interest rates by a half point to 0.5%
+Federal Reserve interest rate decision and its effect on equities,4,4b8d143f-2160-4260-9529-a17d90956af4,0.4317,0,"Mortgage and refinance interest rates today, Monday, September 7, 2026: Fixed purchase rates lower than refi rates"
+Federal Reserve interest rate decision and its effect on equities,5,d134c670-a818-4209-9ff9-2a703da0211c,0.4239,1,Rate Rise in Play as Fed Officials Await Inflation Data
+Federal Reserve interest rate decision and its effect on equities,6,2c025f20-2cff-4090-9df3-9898ae924782,0.411,0,Euro zone inflation is back above 3%. Higher interest rates are likely to follow
+Federal Reserve interest rate decision and its effect on equities,7,9107fb28-42e0-4080-9429-6bc50d07a1d2,0.4106,0,Fed Governor Barr says he'll support rate hike if inflation doesn't ease
+Federal Reserve interest rate decision and its effect on equities,8,c2bf3395-1f9e-4913-899c-7565d2499266,0.4104,0,Trump calls for interest rate cut after jobs figures raise hike bets
+Federal Reserve interest rate decision and its effect on equities,9,29fa73dc-db65-463b-9729-842855112a53,0.403,0,"Dutch Central Bank Cuts Gold Reserves in U.S., Citing ‘Geopolitical Unrest’"
+Federal Reserve interest rate decision and its effect on equities,10,191c979c-890e-4d43-a549-12f81aa7e779,0.4013,0,"Mortgage and refinance interest rates today, Sunday, September 6, 2026: Rates much higher week-over-week"
+US inflation data and consumer prices,1,0216d5ed-700f-452b-923b-cc54c092af65,0.5234,0,"Singapore inflation hits highest in nearly two years, but undershoots expectations"
+US inflation data and consumer prices,2,0e286fdb-bea5-4be5-ad89-5bf6eee9b193,0.4457,1,PCE Index Shows Inflation Remained Elevated in July Amid High Energy Costs
+US inflation data and consumer prices,3,2c025f20-2cff-4090-9df3-9898ae924782,0.4307,0,Euro zone inflation is back above 3%. Higher interest rates are likely to follow
+US inflation data and consumer prices,4,da6088fc-416a-4a60-b524-9320fcf501fa,0.4125,0,Powell says labor market not a source of significant inflation pressure
+US inflation data and consumer prices,5,d134c670-a818-4209-9ff9-2a703da0211c,0.4109,1,Rate Rise in Play as Fed Officials Await Inflation Data
+US inflation data and consumer prices,6,9107fb28-42e0-4080-9429-6bc50d07a1d2,0.3864,1,Fed Governor Barr says he'll support rate hike if inflation doesn't ease
+US inflation data and consumer prices,7,c6c58970-a2f0-4e45-ac3a-80d25910df93,0.3838,1,"Kansas City Fed's Schmid says inflation 'stubborn' and 'sticky,' policy rate not restrictive"
+US inflation data and consumer prices,8,921af829-d812-4be2-87f4-873f65b6a567,0.3455,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+US inflation data and consumer prices,9,e516bae9-48ae-49f8-81c7-30ef008cb598,0.3419,0,"UK house prices fall for first time since 2023, led by London and south-east"
+US inflation data and consumer prices,10,ba07f03b-0afc-4499-933d-acc95314aa64,0.3337,0,Yen extends rally to new seven-month high; dollar subdued ahead of CPI
+quarterly earnings beat expectations,1,033d0487-dd03-456e-a2b8-467775a22df0,0.5338,1,Plus500 says it will meet expectations after quarterly revenue climbs 11%
+quarterly earnings beat expectations,2,e59eb51d-ddb0-4f05-8d53-357244f15d7a,0.403,0,Here are the major earnings before the open Tuesday
+quarterly earnings beat expectations,3,f37090f1-f418-4bcb-b31a-dbff357fea56,0.4006,0,"Private payrolls rose by 38,000 in August, less than expected, ADP reports"
+quarterly earnings beat expectations,4,23b9c861-4df1-429b-a32e-1eccac5994f9,0.3935,0,Wingstop’s stock slides 12% after profit falls short of estimates
+quarterly earnings beat expectations,5,a9bc83ef-0209-4312-8265-79344b26e6de,0.3887,1,Barclays reports 18% profit rise as it lifts income guidance
+quarterly earnings beat expectations,6,54d494ba-9813-44bd-aa49-6161448422fd,0.3857,0,Hibbett shares fall as Q1 sales miss analysts’ estimate
+quarterly earnings beat expectations,7,c21afd1c-aebb-4e15-ac63-e3150c5170f8,0.3788,1,Dell Stock Exploded Over 300% — Its 150% EPS Growth Could Send It Even Higher
+quarterly earnings beat expectations,8,10523c98-0802-4188-93df-97aaf7b3e15b,0.3498,0,Mission Produce Q3 2026 Earnings Preview
+quarterly earnings beat expectations,9,f4ffcf2a-45f3-4946-b0e7-918633b17759,0.3416,0,Earnings call transcript: Emyria posts 208% revenue jump in H2 2026
+quarterly earnings beat expectations,10,d8b3b1cb-7832-4a94-950b-71abf8b00f5f,0.3402,0,Casey's General Stores Q1 2027 Earnings Preview
+company misses earnings and guidance cut,1,a9bc83ef-0209-4312-8265-79344b26e6de,0.481,0,Barclays reports 18% profit rise as it lifts income guidance
+company misses earnings and guidance cut,2,23b9c861-4df1-429b-a32e-1eccac5994f9,0.4783,1,Wingstop’s stock slides 12% after profit falls short of estimates
+company misses earnings and guidance cut,3,54d494ba-9813-44bd-aa49-6161448422fd,0.4261,1,Hibbett shares fall as Q1 sales miss analysts’ estimate
+company misses earnings and guidance cut,4,e59eb51d-ddb0-4f05-8d53-357244f15d7a,0.3876,0,Here are the major earnings before the open Tuesday
+company misses earnings and guidance cut,5,cc889102-b352-44bb-9468-2993b8b1c19a,0.384,0,Novartis hikes sales and profit guidance for the year
+company misses earnings and guidance cut,6,10523c98-0802-4188-93df-97aaf7b3e15b,0.328,0,Mission Produce Q3 2026 Earnings Preview
+company misses earnings and guidance cut,7,b858ebc1-a035-48eb-9c91-6d627b7d76d0,0.323,0,United earnings top estimates but airline expects $6 billion in added fuel costs - CNBC
+company misses earnings and guidance cut,8,033d0487-dd03-456e-a2b8-467775a22df0,0.3206,0,Plus500 says it will meet expectations after quarterly revenue climbs 11%
+company misses earnings and guidance cut,9,aac238fc-9cc3-4942-a178-0d4c382ff687,0.3048,1,Anheuser-Busch InBev shares slip as sales come up shy of estimates
+company misses earnings and guidance cut,10,f4ffcf2a-45f3-4946-b0e7-918633b17759,0.3016,0,Earnings call transcript: Emyria posts 208% revenue jump in H2 2026
+oil prices and energy market volatility,1,17daa343-b7e5-4d90-891b-3bc715d9ef54,0.4858,1,The best energy stocks right now as two major conflicts keep oil prices elevated
+oil prices and energy market volatility,2,138d4c03-5d46-42a1-80e0-4778b965b362,0.4666,1,Oil prices climb after reports of Saudi Aramco refinery being hit by Houthi rebels
+oil prices and energy market volatility,3,ff7f953d-4ca3-4ac4-9d5a-aca6fb580e3d,0.4341,1,Oil Jumps for Fourth Straight Day and Diesel Nears Record High
+oil prices and energy market volatility,4,c5a0622e-9156-42b4-af3e-cd5da0979d8c,0.4006,1,Oil extends gains after US and Iran strike ships - Yahoo Finance
+oil prices and energy market volatility,5,83be0278-328b-4bc2-92f4-7941f3409fe1,0.3907,0,Trump’s state capitalism comes to the oil industry with his unprecedented Venezuela deal
+oil prices and energy market volatility,6,4f2464e8-b6f5-4be6-95b2-88cbc46a73a4,0.3792,1,UK petrol prices hit highest level since Iran war began
+oil prices and energy market volatility,7,ccc5fddb-ed98-4341-8603-e201df29b92e,0.341,0,OPEC Plus Holds Oil Production Steady as U.S.-Iran Strikes Resume
+oil prices and energy market volatility,8,710a6178-3691-4dc3-9fd2-fc2cd661554e,0.3386,0,Corn and wheat prices jump to highest prices in more than three years
+oil prices and energy market volatility,9,56b22a67-9086-487f-a1f4-0922f811edf6,0.3379,1,Bessent Blames Ukraine for High Energy Prices
+oil prices and energy market volatility,10,a8fb83b4-0a6d-4ef5-904c-dc27c87afac0,0.3312,1,Iran War Helps to Drive U.S. Diesel Prices to New High
+Middle East conflict impact on markets,1,6fdca5f2-ff23-40b6-8fdd-ea51cab98b28,0.396,1,Citi and ANZ raise Brent crude forecasts amid Middle East supply disruptions
+Middle East conflict impact on markets,2,a8fb83b4-0a6d-4ef5-904c-dc27c87afac0,0.3732,1,Iran War Helps to Drive U.S. Diesel Prices to New High
+Middle East conflict impact on markets,3,83be0278-328b-4bc2-92f4-7941f3409fe1,0.3426,0,Trump’s state capitalism comes to the oil industry with his unprecedented Venezuela deal
+Middle East conflict impact on markets,4,657e9435-d4ee-40c3-9160-32c7442fbedd,0.3418,0,Canada’s pivot to Asia is finally real. The challenge is that neither side knows much about the other
+Middle East conflict impact on markets,5,ccc5fddb-ed98-4341-8603-e201df29b92e,0.3351,1,OPEC Plus Holds Oil Production Steady as U.S.-Iran Strikes Resume
+Middle East conflict impact on markets,6,138d4c03-5d46-42a1-80e0-4778b965b362,0.3347,1,Oil prices climb after reports of Saudi Aramco refinery being hit by Houthi rebels
+Middle East conflict impact on markets,7,56b22a67-9086-487f-a1f4-0922f811edf6,0.3135,0,Bessent Blames Ukraine for High Energy Prices
+Middle East conflict impact on markets,8,17daa343-b7e5-4d90-891b-3bc715d9ef54,0.3082,0,The best energy stocks right now as two major conflicts keep oil prices elevated
+Middle East conflict impact on markets,9,c5a0622e-9156-42b4-af3e-cd5da0979d8c,0.2831,1,Oil extends gains after US and Iran strike ships - Yahoo Finance
+Middle East conflict impact on markets,10,aedb1645-c9be-446a-be8e-502e937565b8,0.2809,0,"China's export shock is pushing the global economy to a breaking point, former trade official says - Fortune"
+AI chip demand and semiconductor stocks,1,6b63efd2-3b3e-40b1-a256-49ff8f6433e3,0.5673,0,Chip stock investors beware — these charts could warn of further weakness ahead
+AI chip demand and semiconductor stocks,2,cdeaee01-7172-4c63-b53e-22c379498e3b,0.48,0,Z.ai shares surge 8% after releasing new AI model running only on Chinese chips
+AI chip demand and semiconductor stocks,3,7d09a406-078f-4a2f-8025-339faf5de349,0.4317,0,"Stocks rise on Big Tech gains, encouraging inflation signs: Live updates - CNBC"
+AI chip demand and semiconductor stocks,4,7dd72dd0-012a-49d7-9ee5-f77f89a8c0eb,0.4276,1,Why the launch of OpenAI’s latest Astra model reignited the memory-chip trade
+AI chip demand and semiconductor stocks,5,45901716-426d-47bb-bf1d-5998a5cef9c7,0.4199,0,"AI cancer cures slowed by chip shortage, says UK's biggest tech boss"
+AI chip demand and semiconductor stocks,6,c21afd1c-aebb-4e15-ac63-e3150c5170f8,0.3954,0,Dell Stock Exploded Over 300% — Its 150% EPS Growth Could Send It Even Higher
+AI chip demand and semiconductor stocks,7,635c6f19-f50e-4365-9474-c8b792605be7,0.38,0,"China’s New Graduates, Facing a Dire Job Market, Must Also Contend With A.I."
+AI chip demand and semiconductor stocks,8,baee337f-61c4-4a8e-95c0-fdc787501d92,0.3628,0,Food delivery riders call on platforms to open up AI ‘black box’ they say has cut pay
+AI chip demand and semiconductor stocks,9,7fa9c6e2-7b6b-4c77-b265-e0ce987b85b1,0.3449,0,Final S&P U.S. manufacturing index is 52.2 in February vs. initial 51.5
+AI chip demand and semiconductor stocks,10,c54b40f2-5f88-4761-b6c0-6318ade47aeb,0.3329,0,Which Investors Will Get Rich From Anthropic’s IPO?
+big tech layoffs and job cuts,1,120e182e-443e-4e09-a798-6f07dc0dbf5d,0.5186,0,"Trump braces for midterms, crucial union vote as Labor Day shows 75,000 lost manufacturing jobs"
+big tech layoffs and job cuts,2,7f224a01-8930-43d4-9f25-1316cb794f68,0.4633,0,"Volkswagen Plans to Cut 50,000 Jobs"
+big tech layoffs and job cuts,3,baee337f-61c4-4a8e-95c0-fdc787501d92,0.4538,0,Food delivery riders call on platforms to open up AI ‘black box’ they say has cut pay
+big tech layoffs and job cuts,4,4e744513-d8b1-4761-ae04-b90001abc13f,0.45,0,U.S. productivity slows down in fourth quarter while unit labor costs accelerate
+big tech layoffs and job cuts,5,a6cfd9e4-1f06-436d-9501-0ae2d5100c9b,0.414,0,Prediction market traders think job creation rebounded in August
+big tech layoffs and job cuts,6,c2bf3395-1f9e-4913-899c-7565d2499266,0.4051,0,Trump calls for interest rate cut after jobs figures raise hike bets
+big tech layoffs and job cuts,7,7d09a406-078f-4a2f-8025-339faf5de349,0.4045,0,"Stocks rise on Big Tech gains, encouraging inflation signs: Live updates - CNBC"
+big tech layoffs and job cuts,8,d9e958e9-e8ef-464b-b1a1-7086caacf351,0.3826,0,Will a Turnaround Plan Revive Volkswagen or Merely Delay Its Demise?
+big tech layoffs and job cuts,9,6249589e-cb16-490b-bbc7-ae2557f310b2,0.3746,0,Smaller Revision Points to More Accurate Jobs Numbers
+big tech layoffs and job cuts,10,8b43932c-14e8-4b5b-a997-2d8ef5eb25fa,0.3701,0,"Jaguar Land Rover to cut 4,000 jobs over two years in major cost-saving drive"
+cryptocurrency and bitcoin price moves,1,4e650989-6ea2-4697-8913-ecb37e62478a,0.6028,1,Crypto extends gains after biggest 3-day rally since 2023
+cryptocurrency and bitcoin price moves,2,0828bd33-0680-47b6-b863-0213081d8682,0.4888,1,Bitcoin heads for third winning week in a row as macro pressures mount
+cryptocurrency and bitcoin price moves,3,7db6e468-18d7-46ca-aa78-f4b02f525221,0.4281,1,How BlackRock (BLK) is Quietly Turning Bitcoin Whales Into Wall Street Clients
+cryptocurrency and bitcoin price moves,4,921af829-d812-4be2-87f4-873f65b6a567,0.3951,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+cryptocurrency and bitcoin price moves,5,1fa4ba5b-2a0f-477c-b4e4-767f51dbe0ed,0.3783,0,Dollar jumps 0.5% to 0.8890 francs
+cryptocurrency and bitcoin price moves,6,138d4c03-5d46-42a1-80e0-4778b965b362,0.3563,0,Oil prices climb after reports of Saudi Aramco refinery being hit by Houthi rebels
+cryptocurrency and bitcoin price moves,7,6b63efd2-3b3e-40b1-a256-49ff8f6433e3,0.3523,0,Chip stock investors beware — these charts could warn of further weakness ahead
+cryptocurrency and bitcoin price moves,8,710a6178-3691-4dc3-9fd2-fc2cd661554e,0.3488,0,Corn and wheat prices jump to highest prices in more than three years
+cryptocurrency and bitcoin price moves,9,5ce2fcfd-1a1d-4fa7-9263-71460146fcc8,0.3314,0,Stablecoins Won't Scale Without Banks
+cryptocurrency and bitcoin price moves,10,8b9b5d8c-10dd-43e9-b42b-c58f3c07b920,0.3273,0,Bessent's bond gambit aimed at calming markets is instead stirring inflation worries
+US tariffs and trade policy,1,2338c7d3-6d80-4e11-8c30-32ad4ae6397f,0.4608,0,Trump Puts Tariffs of Up to 100% on Foreign-Made Drones
+US tariffs and trade policy,2,aedb1645-c9be-446a-be8e-502e937565b8,0.4439,1,"China's export shock is pushing the global economy to a breaking point, former trade official says - Fortune"
+US tariffs and trade policy,3,83be0278-328b-4bc2-92f4-7941f3409fe1,0.4314,0,Trump’s state capitalism comes to the oil industry with his unprecedented Venezuela deal
+US tariffs and trade policy,4,3eaf9e7c-92c1-4188-8748-fc0906c19a10,0.4208,1,"Wisconsin cheese, Maine seafood, Kentucky appliances: Trump’s Canada tariffs punch swing states just before the midterms"
+US tariffs and trade policy,5,9bc5528f-bac0-4450-9de2-705e3337210b,0.3823,0,Trump’s Top Trade Representative Details Offer That Canada Rejected
+US tariffs and trade policy,6,0360eaab-901f-4799-801d-24eb6a14db86,0.3801,0,"China hits back at G20 statement on its reliance on exports, accusing them of 'promoting protectionism'"
+US tariffs and trade policy,7,b3a4e332-a72f-4c77-af96-a1511bd20307,0.3597,0,'They asked too much': Canadian dollar slides as Ottawa and Washington head for all-out trade war
+US tariffs and trade policy,8,4631a0fc-f41d-44c2-a4c2-c1b90b4dd726,0.3492,0,Trump says Canada’s Bombardier must build jets in US or lose market access
+US tariffs and trade policy,9,657e9435-d4ee-40c3-9160-32c7442fbedd,0.3376,0,Canada’s pivot to Asia is finally real. The challenge is that neither side knows much about the other
+US tariffs and trade policy,10,c5a0622e-9156-42b4-af3e-cd5da0979d8c,0.3192,0,Oil extends gains after US and Iran strike ships - Yahoo Finance
+China economy slowdown and stimulus,1,aedb1645-c9be-446a-be8e-502e937565b8,0.5275,0,"China's export shock is pushing the global economy to a breaking point, former trade official says - Fortune"
+China economy slowdown and stimulus,2,180bdf85-bca7-43f0-9d73-37e20a2c5246,0.3997,1,"China's factory activity shrinks for second straight month, contracting less than expected"
+China economy slowdown and stimulus,3,65707e5f-13d3-4121-adcc-665a81f93a0e,0.3992,0,Social Media in China Is Getting Really Dark
+China economy slowdown and stimulus,4,4e744513-d8b1-4761-ae04-b90001abc13f,0.3821,0,U.S. productivity slows down in fourth quarter while unit labor costs accelerate
+China economy slowdown and stimulus,5,0360eaab-901f-4799-801d-24eb6a14db86,0.3798,0,"China hits back at G20 statement on its reliance on exports, accusing them of 'promoting protectionism'"
+China economy slowdown and stimulus,6,921af829-d812-4be2-87f4-873f65b6a567,0.3373,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+China economy slowdown and stimulus,7,635c6f19-f50e-4365-9474-c8b792605be7,0.32,0,"China’s New Graduates, Facing a Dire Job Market, Must Also Contend With A.I."
+China economy slowdown and stimulus,8,52b34bed-328c-450f-b13c-e837bc6600a5,0.3006,0,New York Fed's Williams says yield surge due to strong economic prospects
+China economy slowdown and stimulus,9,cdeaee01-7172-4c63-b53e-22c379498e3b,0.29,0,Z.ai shares surge 8% after releasing new AI model running only on Chinese chips
+China economy slowdown and stimulus,10,4896c8af-d686-40fa-a22a-65e54f125191,0.2846,0,"At G20 Meeting, Scott Bessent Accuses China of Flooding the World With Cheap Exports"
+Treasury yields and bond market stress,1,921af829-d812-4be2-87f4-873f65b6a567,0.5784,1,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+Treasury yields and bond market stress,2,52b34bed-328c-450f-b13c-e837bc6600a5,0.5096,1,New York Fed's Williams says yield surge due to strong economic prospects
+Treasury yields and bond market stress,3,586f883f-eb41-4f0b-8fb8-7f15a7bd311b,0.5009,0,Berkshire CEO Greg Abel says Japanese bond yields not a challenge for trading houses right now
+Treasury yields and bond market stress,4,881b3450-71d4-4301-92e1-9565b13576e0,0.4899,1,Stanley Druckenmiller leads doubters who think Bessent's bond ploys will fail
+Treasury yields and bond market stress,5,f40d3b36-2bb3-4cef-88c2-0c6f36b82712,0.4674,1,"How will bond market turmoil affect your mortgage, pension and savings in UK?"
+Treasury yields and bond market stress,6,8b9b5d8c-10dd-43e9-b42b-c58f3c07b920,0.4626,1,Bessent's bond gambit aimed at calming markets is instead stirring inflation worries
+Treasury yields and bond market stress,7,d57875d4-33ca-47b0-a7cd-4ec5d753c1b7,0.4248,0,"Best high-yield savings interest rates today, Monday, September 7, 2026: Earn up to 4.10% APY"
+Treasury yields and bond market stress,8,0e989da5-f20e-4c15-85da-b03a171b113f,0.4153,1,Bessent's efforts in the Treasury market so far haven't worked. Here's what else he can try
+Treasury yields and bond market stress,9,6b63efd2-3b3e-40b1-a256-49ff8f6433e3,0.3617,0,Chip stock investors beware — these charts could warn of further weakness ahead
+Treasury yields and bond market stress,10,9107fb28-42e0-4080-9429-6bc50d07a1d2,0.3527,0,Fed Governor Barr says he'll support rate hike if inflation doesn't ease
+mergers and acquisitions deal activity,1,b05168b8-af7c-45cd-9985-4e571a29d30e,0.4484,1,EverBank to buy WaFd in $3.9B reverse merger
+mergers and acquisitions deal activity,2,2c9efe3a-92b4-45c3-ad24-04f3371c23e7,0.4319,1,Aon CEO says insurance broker seeks to build 'premiere middle market platform' with purchase of rival USI
+mergers and acquisitions deal activity,3,e59eb51d-ddb0-4f05-8d53-357244f15d7a,0.34,0,Here are the major earnings before the open Tuesday
+mergers and acquisitions deal activity,4,1c406589-3642-4a03-88d1-43ee24ababa9,0.3204,0,"ROSEN, A LEADING NATIONAL FIRM, Encourages Blaize Holdings, Inc. Investors to Secure Counsel Before Important Deadline i"
+mergers and acquisitions deal activity,5,7dd72dd0-012a-49d7-9ee5-f77f89a8c0eb,0.3183,0,Why the launch of OpenAI’s latest Astra model reignited the memory-chip trade
+mergers and acquisitions deal activity,6,0c6619bd-8614-4fb4-b5bd-a4bed17955fa,0.3137,0,Beyond to buy rights to Buy Buy Baby brand and reunite it with Bed Bath & Beyond
+mergers and acquisitions deal activity,7,e1e88c6d-7a15-46ff-9e65-52632c412e6c,0.3091,1,Charter Communications announces buyout deal for Liberty Broadband at terms above its previous proposal
+mergers and acquisitions deal activity,8,f3242fe8-0205-43a2-8948-08c2f80e467f,0.3046,0,Big Institutions are Quietly Buying Into Blackstone (BX) and KKR’s Wealth Funds
+mergers and acquisitions deal activity,9,aac238fc-9cc3-4942-a178-0d4c382ff687,0.2809,0,Anheuser-Busch InBev shares slip as sales come up shy of estimates
+mergers and acquisitions deal activity,10,51c232f7-108b-4c82-9435-c3e77cd0344f,0.2768,0,"Coca-Cola: Buy, Sell, or Hold After Its Recent Run?"
+regulatory investigation or lawsuit against a company,1,f2ac1215-1c58-4674-8218-381b938f9c8a,0.4355,0,Companies Can Tell Investors Less Under Proposed S.E.C. Rules
+regulatory investigation or lawsuit against a company,2,1c406589-3642-4a03-88d1-43ee24ababa9,0.4236,1,"ROSEN, A LEADING NATIONAL FIRM, Encourages Blaize Holdings, Inc. Investors to Secure Counsel Before Important Deadline i"
+regulatory investigation or lawsuit against a company,3,2a133ed3-5dc5-4a3d-b49c-9bfcecf53891,0.4041,0,"U.A.E. To Review Banque Misr, Targeted by Iran Sanctions"
+regulatory investigation or lawsuit against a company,4,51b9dc8d-9acf-4d03-b793-abd2debefda9,0.3726,1,"ROSEN, A HIGHLY RECOGNIZED LAW FIRM, Encourages The Simply Good Foods Company Investors to Secure Counsel Before Importa"
+regulatory investigation or lawsuit against a company,5,939a3672-0396-44b9-8e87-265c6efa1fb1,0.353,0,"Why This Biotech Stock, With Its First FDA Approval, Just Crashed By Double Digits - Investor's Business Daily"
+regulatory investigation or lawsuit against a company,6,fede5efd-e71a-4e73-9446-62bebf6ff0d8,0.3208,1,"MVST SHAREHOLDER ACTION REMINDER: Faruqi & Faruqi, LLP Reminds Microvast (MVST) Investors of Securities Class Action Law"
+regulatory investigation or lawsuit against a company,7,ee61e23f-5281-476f-9554-7531e258ecac,0.3181,1,"WSE SHAREHOLDER ACTION REMINDER: Faruqi & Faruqi, LLP Reminds Wise Group plc (WSE) Investors of Securities Class Action "
+regulatory investigation or lawsuit against a company,8,2c9efe3a-92b4-45c3-ad24-04f3371c23e7,0.3123,0,Aon CEO says insurance broker seeks to build 'premiere middle market platform' with purchase of rival USI
+regulatory investigation or lawsuit against a company,9,c6a25a4f-bfd6-45a8-9878-53d93fb8c789,0.3003,0,Ukraine seeks to seize water company owned by billionaire family of British theatre mogul
+regulatory investigation or lawsuit against a company,10,129c54f6-0550-4a06-b5a0-ec73ce3c1b78,0.2829,0,"As prediction markets boom, questions arise over who will be the watchdog"
+housing market and mortgage rates,1,4b8d143f-2160-4260-9529-a17d90956af4,0.5379,1,"Mortgage and refinance interest rates today, Monday, September 7, 2026: Fixed purchase rates lower than refi rates"
+housing market and mortgage rates,2,f40d3b36-2bb3-4cef-88c2-0c6f36b82712,0.534,1,"How will bond market turmoil affect your mortgage, pension and savings in UK?"
+housing market and mortgage rates,3,191c979c-890e-4d43-a549-12f81aa7e779,0.5299,1,"Mortgage and refinance interest rates today, Sunday, September 6, 2026: Rates much higher week-over-week"
+housing market and mortgage rates,4,e516bae9-48ae-49f8-81c7-30ef008cb598,0.517,1,"UK house prices fall for first time since 2023, led by London and south-east"
+housing market and mortgage rates,5,7c4fa20c-80a6-44b3-8245-cc3ad2b67927,0.4225,0,The Pros and Cons of Paying Off Your Mortgage Early
+housing market and mortgage rates,6,921af829-d812-4be2-87f4-873f65b6a567,0.4078,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+housing market and mortgage rates,7,b06bfe4c-ff4b-4344-8376-9b1133790eb2,0.4017,0,My wife and I are in our 70s. Should we move to California and take on a bigger mortgage to be near our kids?
+housing market and mortgage rates,8,d57875d4-33ca-47b0-a7cd-4ec5d753c1b7,0.342,0,"Best high-yield savings interest rates today, Monday, September 7, 2026: Earn up to 4.10% APY"
+housing market and mortgage rates,9,f25d61cd-8ea9-49d9-b32b-f6a8c104c169,0.3322,0,Swiss National Bank cuts interest rates by a half point to 0.5%
+housing market and mortgage rates,10,586f883f-eb41-4f0b-8fb8-7f15a7bd311b,0.3271,0,Berkshire CEO Greg Abel says Japanese bond yields not a challenge for trading houses right now
+stock market rally and record highs,1,4e650989-6ea2-4697-8913-ecb37e62478a,0.4741,0,Crypto extends gains after biggest 3-day rally since 2023
+stock market rally and record highs,2,7d09a406-078f-4a2f-8025-339faf5de349,0.4548,1,"Stocks rise on Big Tech gains, encouraging inflation signs: Live updates - CNBC"
+stock market rally and record highs,3,ba07f03b-0afc-4499-933d-acc95314aa64,0.4036,0,Yen extends rally to new seven-month high; dollar subdued ahead of CPI
+stock market rally and record highs,4,f66482b7-4885-4b1d-bd76-c525f81aff13,0.3751,0,Is the stock market open on Labor Day?
+stock market rally and record highs,5,3576f237-aace-4482-b304-bcd9605a69d6,0.341,0,Gold rises as yen surge weakens dollar; oil and Fed bets cap gains
+stock market rally and record highs,6,138d4c03-5d46-42a1-80e0-4778b965b362,0.3409,0,Oil prices climb after reports of Saudi Aramco refinery being hit by Houthi rebels
+stock market rally and record highs,7,a6cfd9e4-1f06-436d-9501-0ae2d5100c9b,0.3405,0,Prediction market traders think job creation rebounded in August
+stock market rally and record highs,8,710a6178-3691-4dc3-9fd2-fc2cd661554e,0.3347,0,Corn and wheat prices jump to highest prices in more than three years
+stock market rally and record highs,9,3069489f-2a68-491c-90e4-3c6324c6a3e5,0.3325,0,"Short Trading Week, CPI and Other Key Things to Watch this Week"
+stock market rally and record highs,10,8b9b5d8c-10dd-43e9-b42b-c58f3c07b920,0.3323,0,Bessent's bond gambit aimed at calming markets is instead stirring inflation worries
+bank capital and financial system stability,1,5ce2fcfd-1a1d-4fa7-9263-71460146fcc8,0.5441,0,Stablecoins Won't Scale Without Banks
+bank capital and financial system stability,2,2237d2c4-dcf6-4b82-aff3-817dad8e1cc5,0.4327,0,Bank of England chief warns new AI models threaten global financial stability
+bank capital and financial system stability,3,2936fcda-d910-408d-8b2f-b7f3c957a261,0.3675,0,Bozzino Capital Launches to Counter “Situational Awareness” and Capitalize on the Post-AI Imagination Economy
+bank capital and financial system stability,4,98de2dce-d325-4d93-a1a1-6bef1a0eadf4,0.3395,0,Fed Governor Waller indicates he will support holding rates steady at September meeting
+bank capital and financial system stability,5,646c91cd-fc2a-40f0-bbaa-46987c8e1b48,0.3195,0,Consumer credit growth soars in December
+bank capital and financial system stability,6,f3242fe8-0205-43a2-8948-08c2f80e467f,0.3069,0,Big Institutions are Quietly Buying Into Blackstone (BX) and KKR’s Wealth Funds
+bank capital and financial system stability,7,921af829-d812-4be2-87f4-873f65b6a567,0.2925,0,The Bond Markets Are Pushing Up Rates. Will Central Banks Follow?
+bank capital and financial system stability,8,7e467fe5-7368-4eb9-81cd-368ab39410bf,0.2913,0,Goldman Sachs partner warns of 'huge danger' in letting AI replace bankers' reasoning skills
+bank capital and financial system stability,9,f40d3b36-2bb3-4cef-88c2-0c6f36b82712,0.2884,0,"How will bond market turmoil affect your mortgage, pension and savings in UK?"
+bank capital and financial system stability,10,d57875d4-33ca-47b0-a7cd-4ec5d753c1b7,0.2844,0,"Best high-yield savings interest rates today, Monday, September 7, 2026: Earn up to 4.10% APY"
+electric vehicle makers and automotive industry,1,8b43932c-14e8-4b5b-a997-2d8ef5eb25fa,0.3914,0,"Jaguar Land Rover to cut 4,000 jobs over two years in major cost-saving drive"
+electric vehicle makers and automotive industry,2,8cd5a8b4-b6a6-48ce-ac1b-237a4ab5ece8,0.3805,1,General Motors unveils new all-electric Cadillac called the Vistiq with 300-mile range
+electric vehicle makers and automotive industry,3,f603fd7f-7353-4dea-bdd3-7678c016a6f0,0.3762,1,Rivian R2 Review: A Tidier (in Size and Price) SUV Is Ready for the Suburbs
+electric vehicle makers and automotive industry,4,7f224a01-8930-43d4-9f25-1316cb794f68,0.3281,0,"Volkswagen Plans to Cut 50,000 Jobs"
+electric vehicle makers and automotive industry,5,d9e958e9-e8ef-464b-b1a1-7086caacf351,0.3214,0,Will a Turnaround Plan Revive Volkswagen or Merely Delay Its Demise?
+electric vehicle makers and automotive industry,6,9e8a8e7c-6abf-40a0-a1a0-523efe0efd70,0.3181,0,Mechanic With 20 Years’ Experience Working On Cars Learns About A Japanese Oil Change. Americans Are Doing It Wrong - Mo
+electric vehicle makers and automotive industry,7,d8324ac3-3bfe-4ab1-8a37-bca2a4bd5bc9,0.3057,1,Tesla Begins Offering Rides in a Car Without a Steering Wheel
+electric vehicle makers and automotive industry,8,120e182e-443e-4e09-a798-6f07dc0dbf5d,0.2982,0,"Trump braces for midterms, crucial union vote as Labor Day shows 75,000 lost manufacturing jobs"
+electric vehicle makers and automotive industry,9,baee337f-61c4-4a8e-95c0-fdc787501d92,0.289,0,Food delivery riders call on platforms to open up AI ‘black box’ they say has cut pay
+electric vehicle makers and automotive industry,10,6d458239-4239-42ed-880b-22bc003ce7f5,0.2782,0,How landscape gardening is being electrified
+airline industry results and travel demand,1,b858ebc1-a035-48eb-9c91-6d627b7d76d0,0.4885,1,United earnings top estimates but airline expects $6 billion in added fuel costs - CNBC
+airline industry results and travel demand,2,baee337f-61c4-4a8e-95c0-fdc787501d92,0.3292,0,Food delivery riders call on platforms to open up AI ‘black box’ they say has cut pay
+airline industry results and travel demand,3,23b9c861-4df1-429b-a32e-1eccac5994f9,0.3055,0,Wingstop’s stock slides 12% after profit falls short of estimates
+airline industry results and travel demand,4,74d9e53e-d432-4b20-ac35-0ac06b271a09,0.3023,0,"From ‘mystery vacations’ to hostels, budget travelers get thrifty as prices rise"
+airline industry results and travel demand,5,0216d5ed-700f-452b-923b-cc54c092af65,0.2816,0,"Singapore inflation hits highest in nearly two years, but undershoots expectations"
+airline industry results and travel demand,6,a6cfd9e4-1f06-436d-9501-0ae2d5100c9b,0.2814,0,Prediction market traders think job creation rebounded in August
+airline industry results and travel demand,7,254b8261-3674-4a67-9889-035ac50b2274,0.2778,0,AirAsia flights impacted by the Mount Anak Krakatau volcanic eruption
+airline industry results and travel demand,8,5c2f2469-3702-4a53-9565-e1cdf03447b6,0.2741,0,Trump threatens to stop sale of Bombardier planes in U.S.
+airline industry results and travel demand,9,3288fa75-9e6c-48fe-87ea-e0f7ad3f7a87,0.2665,0,From 'dog fruit' to darling: India's avocado boom
+airline industry results and travel demand,10,4631a0fc-f41d-44c2-a4c2-c1b90b4dd726,0.266,0,Trump says Canada’s Bombardier must build jets in US or lose market access
+gold and safe-haven assets,1,c0f84ee2-03bb-4dd2-a94c-7f7b7f556cef,0.4409,0,A Couple Diversified Into Gold. Their Adult Children Thought They'd Been Scammed.
+gold and safe-haven assets,2,29fa73dc-db65-463b-9729-842855112a53,0.3567,1,"Dutch Central Bank Cuts Gold Reserves in U.S., Citing ‘Geopolitical Unrest’"
+gold and safe-haven assets,3,51b9dc8d-9acf-4d03-b793-abd2debefda9,0.3434,0,"ROSEN, A HIGHLY RECOGNIZED LAW FIRM, Encourages The Simply Good Foods Company Investors to Secure Counsel Before Importa"
+gold and safe-haven assets,4,f3242fe8-0205-43a2-8948-08c2f80e467f,0.3363,0,Big Institutions are Quietly Buying Into Blackstone (BX) and KKR’s Wealth Funds
+gold and safe-haven assets,5,1c406589-3642-4a03-88d1-43ee24ababa9,0.3242,0,"ROSEN, A LEADING NATIONAL FIRM, Encourages Blaize Holdings, Inc. Investors to Secure Counsel Before Important Deadline i"
+gold and safe-haven assets,6,2936fcda-d910-408d-8b2f-b7f3c957a261,0.3207,0,Bozzino Capital Launches to Counter “Situational Awareness” and Capitalize on the Post-AI Imagination Economy
+gold and safe-haven assets,7,fede5efd-e71a-4e73-9446-62bebf6ff0d8,0.2891,0,"MVST SHAREHOLDER ACTION REMINDER: Faruqi & Faruqi, LLP Reminds Microvast (MVST) Investors of Securities Class Action Law"
+gold and safe-haven assets,8,6b63efd2-3b3e-40b1-a256-49ff8f6433e3,0.2874,0,Chip stock investors beware — these charts could warn of further weakness ahead
+gold and safe-haven assets,9,3576f237-aace-4482-b304-bcd9605a69d6,0.2841,1,Gold rises as yen surge weakens dollar; oil and Fed bets cap gains
+gold and safe-haven assets,10,7db6e468-18d7-46ca-aa78-f4b02f525221,0.283,0,How BlackRock (BLK) is Quietly Turning Bitcoin Whales Into Wall Street Clients

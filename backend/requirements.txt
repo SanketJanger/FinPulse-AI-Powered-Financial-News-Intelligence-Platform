@@ -1,5 +1,4 @@
-# Phase 1: Pure backend, no AI dependencies yet.
-# FinBERT/torch/transformers get added in Phase 5 (V2).
+# Phase 1 — Pure backend, no AI dependencies.
 # Groq/LangChain/sentence-transformers get added in Phase 6 (V3).
 
 fastapi==0.115.0
@@ -10,6 +9,28 @@ confluent-kafka==2.5.3
 redis==5.0.8
 asyncpg==0.29.0
 sqlalchemy==2.0.35
+alembic==1.13.3
 python-dotenv==1.0.1
 httpx==0.27.2
 feedparser==6.0.11
+
+# Phase 5 (V2) — FinBERT sentiment. Only needed when PROCESSOR_VERSION=v2.
+# CPU wheel: pip install torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+torch==2.4.1
+transformers==4.44.2
+
+# Phase 6 (V3) — hybrid pipeline. Only needed when PROCESSOR_VERSION=v3
+# (the API also uses sentence-transformers + chromadb for POST /api/search).
+groq==0.11.0
+spacy==3.7.6
+sentence-transformers==3.1.1
+chromadb==0.5.5
+# after install: python -m spacy download en_core_web_sm
+
+# Phase 8 — evaluation harness only (scripts/evaluation.py).
+openai==1.51.0
+vaderSentiment==3.3.2
+pandas==2.2.3
+matplotlib==3.9.2
+seaborn==0.13.2
+scikit-learn==1.9.0

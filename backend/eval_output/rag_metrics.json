@@ -1,0 +1,368 @@
+{
+  "map_p_at_5": 0.38,
+  "map_p_at_10": 0.27,
+  "mrr": 0.6224999999999999,
+  "mean_query_latency_ms": 4.4523669000682276,
+  "per_query": [
+    {
+      "query": "Federal Reserve interest rate decision and its effect on equities",
+      "p_at_5": 0.2,
+      "p_at_10": 0.1,
+      "reciprocal_rank": 0.2,
+      "relevant_flags": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "US inflation data and consumer prices",
+      "p_at_5": 0.4,
+      "p_at_10": 0.4,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "quarterly earnings beat expectations",
+      "p_at_5": 0.4,
+      "p_at_10": 0.3,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "company misses earnings and guidance cut",
+      "p_at_5": 0.4,
+      "p_at_10": 0.3,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "query": "oil prices and energy market volatility",
+      "p_at_5": 0.8,
+      "p_at_10": 0.7,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "query": "Middle East conflict impact on markets",
+      "p_at_5": 0.6,
+      "p_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "query": "AI chip demand and semiconductor stocks",
+      "p_at_5": 0.2,
+      "p_at_10": 0.1,
+      "reciprocal_rank": 0.25,
+      "relevant_flags": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "big tech layoffs and job cuts",
+      "p_at_5": 0.0,
+      "p_at_10": 0.0,
+      "reciprocal_rank": 0.0,
+      "relevant_flags": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "cryptocurrency and bitcoin price moves",
+      "p_at_5": 0.6,
+      "p_at_10": 0.3,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "US tariffs and trade policy",
+      "p_at_5": 0.4,
+      "p_at_10": 0.2,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "China economy slowdown and stimulus",
+      "p_at_5": 0.2,
+      "p_at_10": 0.1,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "Treasury yields and bond market stress",
+      "p_at_5": 0.8,
+      "p_at_10": 0.6,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "mergers and acquisitions deal activity",
+      "p_at_5": 0.4,
+      "p_at_10": 0.3,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "regulatory investigation or lawsuit against a company",
+      "p_at_5": 0.4,
+      "p_at_10": 0.4,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "housing market and mortgage rates",
+      "p_at_5": 0.8,
+      "p_at_10": 0.4,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "stock market rally and record highs",
+      "p_at_5": 0.2,
+      "p_at_10": 0.1,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "bank capital and financial system stability",
+      "p_at_5": 0.0,
+      "p_at_10": 0.0,
+      "reciprocal_rank": 0.0,
+      "relevant_flags": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "electric vehicle makers and automotive industry",
+      "p_at_5": 0.4,
+      "p_at_10": 0.3,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "airline industry results and travel demand",
+      "p_at_5": 0.2,
+      "p_at_10": 0.1,
+      "reciprocal_rank": 1.0,
+      "relevant_flags": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "query": "gold and safe-haven assets",
+      "p_at_5": 0.2,
+      "p_at_10": 0.2,
+      "reciprocal_rank": 0.5,
+      "relevant_flags": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    }
+  ]
+}

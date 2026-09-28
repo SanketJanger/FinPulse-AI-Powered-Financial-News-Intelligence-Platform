@@ -80,7 +80,313 @@ you'd hit if `uvicorn` picks up the system install instead of the venv one.
 No AI, no news ingestion yet, no database writes. This phase only proves the
 plumbing (Kafka + Redis + FastAPI) works together. Phase 2 adds the News Producer.
 
-## Next: Phase 2 — Data Ingestion
-Once `/health` returns clean, we'll build the News Producer service that pulls
-from NewsAPI + RSS feeds and publishes to `raw-news`. That's when you'll need
-a NewsAPI key (free tier: https://newsapi.org/register).
+---
+
+# Phase 4 — Backend API (V1)
+
+The deployable V1: a read API over the articles Postgres stores, plus a
+real-time WebSocket feed. No AI yet.
+
+## Run the whole pipeline locally
+
+```bash
+# 1. infra (from Phase 1)
+./scripts/setup-local.sh
+
+# 2. API
+cd backend && source venv/bin/activate
+uvicorn app.main:app --reload            # http://localhost:8000/docs
+
+# 3. consumer — drains raw-news into Postgres, fans new rows out to /ws/feed
+python -m app.services.ai_consumer
+
+# 4. producer — pulls NewsAPI + RSS, publishes to raw-news (needs NEWSAPI_KEY)
+python -m app.services.news_producer
+```
+
+## Endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/health` | api / redis / kafka / database status (never 5xx) |
+| GET | `/api/feed` | `page` (≥1), `page_size` (1–100), `source`, `date_from`, `date_to` (ISO). Cached in Redis for `FEED_CACHE_TTL` s (default 60); response carries `X-Cache: HIT\|MISS` |
+| GET | `/api/article/{id}` | UUID path; 422 on malformed id, 404 if absent |
+| GET | `/api/trending` | `window_hours` (1–168, default 24), `limit` (1–50). Top sources by volume in the window. Cached like `/api/feed` |
+| WS | `/ws/feed` | Emits `{"type":"connected"}` then `{"type":"article","data":{…}}` for every newly-stored article |
+
+Ordering / date filtering use `coalesce(published_at, fetched_at)` so RSS
+rows with no publisher timestamp still sort and filter sensibly.
+
+## Error contract
+
+- **422** — bad query/path params: `{"detail": [ …pydantic errors… ]}`
+- **404** — `GET /api/article/{id}` for a well-formed but unknown UUID: `{"detail": "Article … not found"}`
+- **500** — anything unhandled: `{"detail": "Internal server error"}` (full traceback stays in the server log)
+
+## Config (added this phase, all optional)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `CORS_ORIGINS` | `["http://localhost:3000"]` | JSON list of allowed browser origins |
+| `FEED_CACHE_TTL` | `60` | seconds `/api/feed` and `/api/trending` stay cached |
+| `NEW_ARTICLES_CHANNEL` | `finpulse:new-articles` | Redis pub/sub channel bridging consumer → `/ws/feed` |
+
+---
+
+# Database migrations (Alembic)
+
+The schema is managed by Alembic (`backend/alembic/`). A fresh environment
+builds the whole schema with one command; nothing is created implicitly at
+app startup.
+
+```bash
+cd backend && source venv/bin/activate
+
+alembic upgrade head        # build / update schema to latest
+alembic history             # list migrations
+alembic current             # what this DB is at
+alembic downgrade -1        # roll back one
+```
+
+The DB URL comes from `DATABASE_URL` in `.env` (read by `alembic/env.py`),
+not from `alembic.ini`. `alembic check` fails CI if the ORM in
+`app/models/database.py` has drifted from the migrations.
+
+Migrations:
+- `0001_initial_articles` — baseline `articles` table (Phase 3 schema)
+- `0002_add_v2_sentiment_columns` — adds `sentiment`, `confidence`, `impact_score`, `processed_at`
+- `0003_add_v3_columns` — adds `summary`, `tickers`, `companies`, `category`, `embedding_id`
+
+> If you already ran Phase 3 (so `articles` exists but there's no
+> `alembic_version` table), stamp the baseline once before upgrading:
+> `alembic stamp 0001_initial_articles && alembic upgrade head`.
+
+---
+
+# Phase 5 — FinBERT sentiment (V2)
+
+Adds a sentiment pass to the consumer, switched on by `PROCESSOR_VERSION`.
+No API or schema rewrite — just new nullable columns and endpoints.
+
+## Switch versions
+
+```bash
+# v1 — pass-through, no ML deps needed
+PROCESSOR_VERSION=v1 python -m app.services.ai_consumer
+
+# v2 — FinBERT sentiment (needs torch + transformers)
+pip install torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu
+pip install transformers==4.44.2
+PROCESSOR_VERSION=v2 python -m app.services.ai_consumer
+```
+
+The FinBERT model (`ProsusAI/finbert`, ~440 MB) loads **once** at consumer
+startup — GPU if `torch.cuda.is_available()`, else CPU. If the model fails
+to load or score an article, the article is still stored, just with
+`sentiment = NULL`.
+
+## Backfill existing rows
+
+```bash
+PROCESSOR_VERSION=v2 python -m app.services.backfill          # un-enriched rows only
+PROCESSOR_VERSION=v3 python -m app.services.backfill --all    # re-run everything
+#                                            [--limit N] [--batch N]
+```
+Runs the current processor over rows already in Postgres and updates them
+in place — use it when rolling a new version out over old data, or after
+changing an enrichment rule.
+
+## Enrichment
+
+`ProsusAI/finbert` labels (`positive`/`negative`/`neutral`) are surfaced as
+`bullish`/`bearish`/`neutral`. `impact_score`:
+
+| sentiment | impact_score |
+|-----------|--------------|
+| neutral | **3** (floored — no directional signal) |
+| bullish / bearish, confidence > 0.9 | 8 |
+| bullish / bearish, confidence > 0.8 | 6 |
+| bullish / bearish, confidence > 0.7 | 5 |
+| bullish / bearish, else | 3 |
+
+## New / changed endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/feed` | + `sentiment=bullish\|bearish\|neutral` filter (422 on any other value) |
+| GET | `/api/article/{id}` | response now carries `sentiment`, `confidence`, `impact_score`, `processed_at` (null under v1) |
+| GET | `/api/sentiment/stats` | `days` (1–90, default 7). Daily `{bullish, bearish, neutral, total}` buckets (UTC), over rows with `processed_at` set. Cached `SENTIMENT_STATS_TTL` s (default 300) |
+
+## Config (added this phase)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `PROCESSOR_VERSION` | `v1` | `v1` pass-through · `v2` FinBERT · `v3` hybrid |
+| `FINBERT_MODEL` | `ProsusAI/finbert` | HF model id for v2 |
+| `SENTIMENT_STATS_TTL` | `300` | `/api/sentiment/stats` cache seconds |
+
+---
+
+# Phase 6 — Hybrid AI (V3)
+
+The consumer's v3 processor chains four steps per article; each is
+independently guarded, so only FinBERT is a hard dependency:
+
+```
+FinBERT       -> sentiment / confidence / impact_score
+Groq (1 call) -> 2-sentence summary + category            (skipped if no GROQ_API_KEY)
+regex + spaCy -> tickers / companies
+MiniLM (384d) -> embedding -> upsert to ChromaDB          embedding_id = article id
+```
+
+## Run V3
+
+```bash
+pip install groq==0.11.0 spacy==3.7.6 sentence-transformers==3.1.1 chromadb==0.5.5
+python -m spacy download en_core_web_sm
+
+docker compose --profile v3 up -d chromadb        # vector DB on :8000
+export GROQ_API_KEY=gsk_...                        # optional — blank => no summaries
+PROCESSOR_VERSION=v3 python -m app.services.ai_consumer
+```
+
+The API process also loads the MiniLM model + connects to ChromaDB at
+startup (for `POST /api/search`). If either is missing, `/api/search`
+returns **503**; every other endpoint is unaffected.
+
+## Endpoints
+
+| Method | Path | Notes |
+|--------|------|-------|
+| POST | `/api/search` | body `{query, k=5 (1–50), sentiment?}`. Embeds the query, cosine-kNN in ChromaDB, hydrates hits from Postgres. Returns `{query, count, hits:[{score, article}]}`, `score` = `1 − cosine_distance` ∈ [0,1], ordered high→low. 503 if search unavailable |
+| GET | `/api/alerts` | `limit` (1–200, default 50), `since` (ISO). Articles with `impact_score >= ALERT_IMPACT_THRESHOLD`, newest first. Returns `{threshold, count, alerts:[…]}` |
+| GET | `/api/article/{id}` · `/api/feed` | responses now also carry `summary`, `tickers`, `companies`, `category`, `embedding_id` |
+
+## Alerts
+
+When an enriched article scores `impact_score >= ALERT_IMPACT_THRESHOLD`
+(default 8) the consumer publishes a compact JSON alert to the Kafka
+**`alerts`** topic (streaming interface for downstream notifiers).
+`GET /api/alerts` is the durable view, read straight from the `articles`
+table so it can't drift from what triggered the alert.
+
+## Graceful degradation
+
+| Failure | Result |
+|---------|--------|
+| No `GROQ_API_KEY` / Groq 4xx-5xx / rate limit (retried once) | article stored, `summary` + `category` NULL |
+| spaCy / regex error | `tickers`/`companies` NULL, rest proceeds |
+| ChromaDB down | embedding still computed, not stored, `embedding_id` NULL; `/api/search` → 503 |
+| FinBERT down | (hard dep) sentiment NULL, article still stored |
+
+## Config (added this phase)
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `GROQ_API_KEY` | — | Groq key; blank disables summaries |
+| `GROQ_MODEL` | `openai/gpt-oss-20b` | summary model |
+| `GROQ_MIN_INTERVAL_MS` | `2100` | client-side throttle between Groq calls |
+| `EMBEDDING_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | 384-dim |
+| `CHROMA_HOST` / `CHROMA_PORT` | `localhost` / `8002` | ChromaDB (host 8002 → container 8000) |
+| `CHROMA_COLLECTION` | `articles` | collection name (cosine space) |
+| `ALERT_IMPACT_THRESHOLD` | `8` | `impact_score >=` this → `alerts` topic |
+
+---
+
+# Phase 7 — Next.js frontend
+
+`frontend/` — Next.js 14 (App Router, TypeScript, Tailwind). A single-page
+dashboard over the backend API with a live feed.
+
+## Run
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local          # NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev                          # http://localhost:3000
+```
+
+The backend API must be running on `NEXT_PUBLIC_API_URL` (`uvicorn app.main:app`).
+For the live feed and `/api/search` to have anything to show, also run the
+consumer and, ideally, `PROCESSOR_VERSION=v3`.
+
+## What's on the page
+
+| Component | Source | Notes |
+|-----------|--------|-------|
+| `NewsFeed` | `GET /api/feed` | pagination ("Load more"), sentiment filter chips; prepends websocket pushes with a highlight |
+| `ArticleCard` | — | title, source, relative time, category, summary, `SentimentBadge`, `ImpactMeter`, `$TICKER` chips |
+| `SentimentBadge` | — | bullish = green, bearish = red, neutral = gray (label always shown → CVD-safe) |
+| `SearchBar` → `SearchResults` | `POST /api/search` | semantic search; `?q=` in the URL runs a search on load; each hit shows a `% match` |
+| `TrendingSidebar` | `GET /api/trending` | top sources (24h) with volume bars |
+| `SentimentStats` | `GET /api/sentiment/stats` | stacked bar per day + legend + hover + table view |
+| `AlertsBanner` | `GET /api/alerts` | dismissible strip of high-impact headlines |
+| `useFeedSocket` | `WS /ws/feed` | reconnects with backoff; drives the header "live" indicator |
+
+- **Types** (`lib/types.ts`) mirror the backend Pydantic response models.
+- **API client** (`lib/api.ts`) — one function per endpoint, typed, with an
+  `ApiError` that carries the status (search shows a specific message on 503).
+- **Responsive** — two-column ≥ `lg`, single column with the sidebar below on mobile.
+- **Dark mode** — follows `prefers-color-scheme`, toggle persists to `localStorage`,
+  no flash (inline script in `<head>`).
+- Loading = skeletons; errors = inline message + Retry.
+
+## Config
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | backend base URL; `ws(s)://…/ws/feed` is derived from it |
+
+---
+
+# Phase 8 — Evaluation (VADER vs FinBERT vs Groq LLM + RAG)
+
+`backend/scripts/evaluation.py` — compares three sentiment classifiers
+against an independent reference and evaluates the semantic-search
+retrieval. Everything is written to `backend/eval_output/` as CSV/JSON/PNG.
+
+## Run
+
+```bash
+cd backend && source venv/bin/activate
+pip install openai vaderSentiment pandas matplotlib seaborn scikit-learn
+export OPENAI_API_KEY=sk-...          # ground-truth labeller + RAG judge (gpt-4o-mini)
+# GROQ_API_KEY must also be set (LLM classifier under test)
+docker compose --profile v3 up -d chromadb
+
+python -m scripts.evaluation --n 200
+# resume without re-spending API calls:
+python -m scripts.evaluation --reuse-labels --reuse-predictions
+python -m scripts.evaluation --reuse-labels --skip-rag
+```
+
+## Design
+
+| | |
+|---|---|
+| **Test set** | `--n` articles from Postgres, stratified by source, fixed seed (`scripts/eval/dataset.py`) |
+| **Ground truth** | OpenAI `gpt-4o-mini` (not a system under test) + a fixed market-impact rubric; each item labelled twice (temp 0 / temp 0.5) → `gt_stable` flag; metrics reported on full set **and** stable subset |
+| **Classifiers** | VADER (`compound` thresholds), FinBERT (`app.analysis.finbert`), Groq `openai/gpt-oss-120b` (zero-shot, same rubric) — common `predict(text) → (label, latency)` interface |
+| **Metrics** | accuracy, macro/weighted P/R/F1, per-class F1, confusion matrix, Cohen's κ vs GT, latency mean/median/p95 (`sklearn`) |
+| **RAG** | 20 topical queries → dedicated ChromaDB collection of the test set → `gpt-4o-mini` judges each top-10 hit → Precision@5, Precision@10, MRR |
+
+## Artefacts (`backend/eval_output/`)
+
+| File | Contents |
+|------|----------|
+| `test_set.csv` | `article_id, title, content, ground_truth_sentiment, gt_confidence, gt_stable, gt_rationale, source, url` |
+| `predictions.csv` | per-article predictions + latencies, all 3 models + GT |
+| `metrics.json` | full metric objects (full set + stable subset) |
+| `rag_judgements.csv` | per `(query, hit)` relevance + similarity |
+| `rag_metrics.json` | P@5 / P@10 / MRR overall + per query |
+| `figures/*.png` | confusion matrices, model comparison, per-class F1, latency (150 dpi) |
+| `EVALUATION_REPORT.md` | the full write-up, incl. a Threats-to-validity section |
+
+## Config
+
+| Env var | Default | Meaning |
+|---------|---------|---------|
+| `OPENAI_API_KEY` | — | ground-truth labeller + RAG judge |
+| `EVAL_LABEL_MODEL` | `gpt-4o-mini` | |
+| `EVAL_GROQ_MODEL` | `openai/gpt-oss-120b` | LLM classifier under test |
