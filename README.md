@@ -21,8 +21,7 @@ FinPulse processes 500+ financial news articles per hour from 17 sources, enrich
 - **High-impact alerts**: Articles with market-moving potential (score >= 8)
 
 ## Architecture
-![FinPulse Architecture](Architecture%20Diagram/finpulse_architecture.png)
-
+![FinPulse Architecture](Architecture%20diagram/finpulse_architecture_diagram.png)
 
 ## Tech Stack
 
